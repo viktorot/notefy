@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.android.databinding'
 apply plugin: 'kotlin-android'
 
 android {
@@ -13,9 +12,7 @@ android {
         versionCode 1
         versionName "1.0"
     }
-//    dataBinding {
-//        enabled = true
-//    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -28,7 +25,8 @@ android {
 }
 
 buildscript {
-    ext.kotlin_version = '1.0.0-beta-2423'
+    ext.kotlin_version = '1.0.0-rc-1036'
+
     repositories {
         mavenCentral()
     }
@@ -50,6 +48,4 @@ dependencies {
     compile 'com.jakewharton.timber:timber:3.1.0'
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
-    kapt 'com.android.databinding:compiler:1.0-rc4'
 }

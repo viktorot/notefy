@@ -1,6 +1,6 @@
-package org.viktorot.notefy
+package org.viktorot.notefy.view
 
-import android.databinding.DataBindingUtil
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
@@ -8,39 +8,37 @@ import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
-import org.viktorot.notefy.databinding.NotefyActivityMainBinding
-import org.viktorot.notefy.models.Notification
+import android.widget.Toast
+import org.viktorot.notefy.NotefyApplication
+import org.viktorot.notefy.R
+import org.viktorot.notefy.util.NotificationFactory
 
-class NotefyMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        setContentView(R.layout.notefy_activity_main)
-        var binding = DataBindingUtil.setContentView<NotefyActivityMainBinding>(this, R.layout.notefy_activity_main);
-        binding.notification = Notification();
+        setContentView(R.layout.notefy_activity_main)
 
+        val fab = findViewById(R.id.fab) as FloatingActionButton
+        fab.setOnClickListener { view -> NotificationFactory.displayNormalNotification() }
 
-//        val toolbar = findViewById(R.id.toolbar) as Toolbar
-        setSupportActionBar(binding.mainView.toolbar)
-//
-//        val fab = findViewById(R.id.fab) as FloatingActionButton
-        binding.mainView.fab.setOnClickListener { view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                                                    .setAction("Action", null).show() }
+        val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
+        val toolbar = findViewById(R.id.toolbar) as Toolbar
 
+        val toggle = ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close)
 
-
-//        val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
-        val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.mainView.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        binding.drawerLayout.setDrawerListener(toggle)
+        drawer.setDrawerListener(toggle)
         toggle.syncState()
 
-//        val navigationView = findViewById(R.id.nav_view) as NavigationView
-        binding.navigationView.setNavigationItemSelectedListener(this)
+        val navigationView = findViewById(R.id.navigation_view) as NavigationView
+        navigationView.setNavigationItemSelectedListener(this)
     }
 
     override fun onBackPressed() {
@@ -66,7 +64,7 @@ class NotefyMainActivity : AppCompatActivity(), NavigationView.OnNavigationItemS
         val id = item.itemId
 
         val toolbar = findViewById(R.id.toolbar) as Toolbar
-        Snackbar.make(toolbar, "Vasko", Snackbar.LENGTH_LONG).show()
+        Snackbar.make(toolbar, "Jungle Boogie", Snackbar.LENGTH_LONG).show()
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {

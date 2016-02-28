@@ -5,4 +5,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="title_activity_edit">EditActivity</string>
+
+    <string name="delete_notification_title">Notification title</string>
+    <string name="delete_notification_content">Do you wish to edit/delete this notification?</string>
 </resources>
