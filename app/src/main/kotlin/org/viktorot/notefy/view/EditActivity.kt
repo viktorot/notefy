@@ -14,5 +14,5 @@ class EditActivity : AppCompatActivity() {
         setContentView(R.layout.activity_edit)
 
         val fab = findViewById(R.id.batn) as FloatingActionButton
-        fab.setOnClickListener { view -> NotificationFactory.displayNormalNotification() }
+        fab.setOnClickListener { view -> NotificationFactory.displayNormalNotification(this.applicationContext) }
     }}

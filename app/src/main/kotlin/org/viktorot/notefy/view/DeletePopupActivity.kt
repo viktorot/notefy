@@ -17,8 +17,8 @@ class DeletePopupActivity : AppCompatActivity() {
 
         val builder = AlertDialog.Builder(this)
         builder.setMessage("Cyka")
-                .setPositiveButton("Edit", { dialog, id -> Toast.makeText(NotefyApplication.context, "Delete", Toast.LENGTH_SHORT).show() })
-                .setNegativeButton("Cancel", { dialog, id -> Toast.makeText(NotefyApplication.context, "Cancel", Toast.LENGTH_SHORT).show() })
+                .setPositiveButton("Edit", { dialog, id -> Toast.makeText(this.applicationContext, "Delete", Toast.LENGTH_SHORT).show() })
+                .setNegativeButton("Cancel", { dialog, id -> Toast.makeText(this.applicationContext, "Cancel", Toast.LENGTH_SHORT).show() })
                 .setOnDismissListener({ this.finish() })
 
         builder.create().show()

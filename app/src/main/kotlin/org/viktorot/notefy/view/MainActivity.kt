@@ -1,55 +1,50 @@
 package org.viktorot.notefy.view
 
-import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
-import android.support.design.widget.NavigationView
-import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewAnimationUtils
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
-import org.viktorot.notefy.NotefyApplication
 import org.viktorot.notefy.R
-import org.viktorot.notefy.util.NotificationFactory
+import org.viktorot.notefy.adapters.NumberedAdapter
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.notefy_activity_main)
 
+//        var iconRecyclerView = findViewById(R.id.icon_grid) as RecyclerView
+//        iconRecyclerView.addItemDecoration(MarginItemDecoration(10))
+//        iconRecyclerView.layoutManager = GridLayoutManager(this, 2)
+//        iconRecyclerView.adapter = NumberedAdapter(30)
+
+//        val animator = DefaultItemAnimator()
+//        animator.changeDuration = 1000
+//
+//        iconRecyclerView.itemAnimator = animator
+
+        var btn = findViewById(R.id.btn) as ImageButton
+        btn.setOnClickListener { view ->
+            ViewAnimationUtils.createCircularReveal(view, view.width, view.height, 0f, view.height * 2f).start()
+        }
+
         val fab = findViewById(R.id.fab) as FloatingActionButton
-        fab.setOnClickListener { view -> NotificationFactory.displayNormalNotification() }
-
-        val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
-
-        val toggle = ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-
-        drawer.setDrawerListener(toggle)
-        toggle.syncState()
-
-        val navigationView = findViewById(R.id.navigation_view) as NavigationView
-        navigationView.setNavigationItemSelectedListener(this)
+        fab.setOnClickListener { view -> Toast.makeText(this.applicationContext, "Kwic", Toast.LENGTH_SHORT).show() }
     }
 
-    override fun onBackPressed() {
-        val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START)
-        }
-        else {
-            super.onBackPressed()
-        }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -73,28 +68,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         return super.onOptionsItemSelected(item)
     }
+}
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        val id = item.itemId
+private class MarginItemDecoration(size: Int) : RecyclerView.ItemDecoration() {
+    private val margin: Int
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+    init {
+        margin = size
+    }
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
-        drawer.closeDrawer(GravityCompat.START)
-        return true
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
+        outRect.set(margin, margin, margin, margin)
     }
 }
