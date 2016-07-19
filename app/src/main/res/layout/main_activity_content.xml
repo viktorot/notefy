@@ -18,18 +18,49 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!--<Button-->
-        <!--android:id="@+id/btn"-->
-        <!--android:layout_width="100dp"-->
-        <!--android:layout_height="100dp"-->
-        <!--android:text="kokal"-->
-        <!--android:background="@drawable/icon_item_ripple_selector" />-->
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <ImageButton
-        android:id="@+id/btn"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/ic_alarm_black"
-        android:background="@drawable/icon_item_ripple_selector" />
+        <LinearLayout
+            android:id="@+id/vjuSelected"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:background="@android:color/black">
+
+            <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_alarm_black"
+                android:background="@android:color/black"
+                android:tint="@android:color/white"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/vju"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:background="@android:color/white">
+
+            <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_alarm_black"
+                android:background="@android:color/white"
+                android:tint="@android:color/black"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+
+
 
 </RelativeLayout>
