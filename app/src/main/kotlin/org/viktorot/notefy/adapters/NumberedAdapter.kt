@@ -1,52 +1,45 @@
 package org.viktorot.notefy.adapters
 
-import android.graphics.Color
+import android.databinding.DataBindingUtil
+import android.databinding.ViewDataBinding
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
+import org.viktorot.notefy.BR
 import org.viktorot.notefy.R
+import org.viktorot.notefy.models.TaskModel
 
 import java.util.ArrayList
 
 class NumberedAdapter(count: Int) : RecyclerView.Adapter<TextViewHolder>() {
-    private val labels: MutableList<String>
+    private val labels: MutableList<TaskModel>
 
     companion object {
+        @JvmStatic
         private val TAG: String = NumberedAdapter::class.java.simpleName
     }
 
     init {
-        labels = ArrayList<String>(count)
+        labels = ArrayList<TaskModel>(count)
         for (i in 0..count - 1) {
-            labels.add(i.toString())
+            val task = TaskModel()
+            task.duration = i
+
+            labels.add(task)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TextViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.icon_grid_item, parent, false)
-        return TextViewHolder(view)
+        val inflatedView = LayoutInflater.from(parent.context).inflate(R.layout.icon_grid_item, parent, false)
+        val itemView = TextViewHolder(inflatedView)
+        return itemView
     }
 
     override fun onBindViewHolder(holder: TextViewHolder, position: Int) {
-        holder.rootLayout.setOnClickListener {
-            holder.selected = !holder.selected
-
-            if(holder.selected) {
-//                holder.imageView.setColorFilter(Color.RED)
-                holder.rootLayout.elevation = 10f
-            }
-            else {
-//                holder.imageView.setColorFilter(Color.BLACK)
-                holder.rootLayout.elevation = 0f
-            }
-
-//            notifyItemChanged(position)
-        }
+        val model: TaskModel = labels.get(position)
+        holder.binding.setVariable(BR.task, model)
+        holder.binding.executePendingBindings()
     }
 
     override fun getItemCount(): Int {
@@ -55,14 +48,9 @@ class NumberedAdapter(count: Int) : RecyclerView.Adapter<TextViewHolder>() {
 }
 
 class TextViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//    var textView: TextView
-    var imageView: ImageView
-    var rootLayout: FrameLayout
-    var selected: Boolean
+    var binding: ViewDataBinding
 
     init {
-        rootLayout = itemView.findViewById(R.id.rootLayout) as FrameLayout
-        imageView = itemView.findViewById(R.id.icon) as ImageView
-        selected = false
+        binding = DataBindingUtil.bind(itemView)
     }
 }

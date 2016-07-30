@@ -14,13 +14,16 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity android:name=".view.EditActivity"
                   android:label="Edit"
                   android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".notes_list.NotesListActivity"
+            android:label="Notes Activity"/>
 
         <activity android:name=".view.DeletePopupActivity"
                   android:theme="@style/AppTheme.DeletePopup"

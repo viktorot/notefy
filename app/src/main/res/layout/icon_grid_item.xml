@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootLayout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:background="?android:selectableItemBackground"
-    android:layout_gravity="center">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ImageView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/icon"
-        android:layout_width="wrap_content"
+    <data>
+        <variable
+            name="task"
+            type="org.viktorot.notefy.models.TaskModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="?android:selectableItemBackground"
         android:layout_gravity="center"
-        android:tint="@android:color/black"
-        android:src="@drawable/ic_alarm_black" />
+        android:onClick="@{() -> task.onClick()}">
 
-</FrameLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@{String.valueOf(task.duration)}" />
+
+    </FrameLayout>
+</layout>
 

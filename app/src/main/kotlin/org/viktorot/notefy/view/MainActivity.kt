@@ -2,6 +2,7 @@ package org.viktorot.notefy.view
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.content.Intent
 import android.graphics.Point
 import android.graphics.Rect
 import android.os.Bundle
@@ -20,71 +21,57 @@ import android.widget.ImageButton
 import android.widget.Toast
 import org.viktorot.notefy.R
 import org.viktorot.notefy.adapters.NumberedAdapter
+import org.viktorot.notefy.notes_list.NotesListActivity
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.notefy_activity_main)
+        setContentView(R.layout.main_activity)
 
-//        var iconRecyclerView = findViewById(R.id.icon_grid) as RecyclerView
-//        iconRecyclerView.addItemDecoration(MarginItemDecoration(10))
-//        iconRecyclerView.layoutManager = GridLayoutManager(this, 2)
-//        iconRecyclerView.adapter = NumberedAdapter(30)
-
-//        val animator = DefaultItemAnimator()
-//        animator.changeDuration = 1000
+//        var selected: Boolean = true
 //
-//        iconRecyclerView.itemAnimator = animator
+//        val target = findViewById(R.id.vju)
+//        val targetSelected = findViewById(R.id.vjuSelected)
+//
+//        val gestureListener = object: GestureDetector.SimpleOnGestureListener() {
+//            override fun onDown(e: MotionEvent?): Boolean {
+//                return true
+//            }
+//
+//            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+//                val x = if(e == null) 0 else e.x.toInt()
+//                val y = if(e == null) 0 else e.y.toInt()
+//
+//                target.visibility = View.VISIBLE
+//
+//                val animator: Animator
+//                if(selected) {
+//                    animator = getHideAnimator(target, x, y)
+//                }
+//                else {
+//                    animator = getRevealAnimator(target, x, y)
+//                }
+//
+//                selected = !selected;
+//                animator.start()
+//
+//                return true
+//            }
+//        }
+//
+//        var gestureDetector = GestureDetector(this, gestureListener)
+//
+//        target.setOnTouchListener { view, motionEvent -> gestureDetector.onTouchEvent(motionEvent) }
+//
+//        targetSelected.setOnTouchListener { view, motionEvent -> gestureDetector.onTouchEvent(motionEvent) }
 
-        var selected: Boolean = true
-        val target = findViewById(R.id.vju)
-        val targetSelected = findViewById(R.id.vjuSelected)
-
-        val gestureListener = object: GestureDetector.SimpleOnGestureListener() {
-            override fun onDown(e: MotionEvent?): Boolean {
-                return true
-            }
-
-            override fun onSingleTapUp(e: MotionEvent?): Boolean {
-                val x = if(e == null) 0 else e.x.toInt()
-                val y = if(e == null) 0 else e.y.toInt()
-
-                target.visibility = View.VISIBLE
-
-                val animator: Animator
-                if(selected) {
-                    animator = getHideAnimator(target, x, y)
-                }
-                else {
-                    animator = getRevealAnimator(target, x, y)
-                }
-
-                selected = !selected;
-                animator.start()
-
-                return true
-            }
-        }
-
-        var gestureDetector = GestureDetector(this, gestureListener)
-
-
-        target.setOnTouchListener(object: View.OnTouchListener {
-            override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-                return gestureDetector.onTouchEvent(p1)
-            }
-        })
-
-        targetSelected.setOnTouchListener(object: View.OnTouchListener {
-            override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
-                return gestureDetector.onTouchEvent(p1)
-            }
-        })
 
         val fab = findViewById(R.id.fab) as FloatingActionButton
-        fab.setOnClickListener { view -> }
+        fab.setOnClickListener { view ->
+            startListActivity()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -179,19 +166,10 @@ class MainActivity : AppCompatActivity() {
         return animator
     }
 
-
+    private fun startListActivity() {
+        val intent = Intent(this, NotesListActivity::class.java)
+        startActivity(intent)
+    }
 
 }
 
-
-private class MarginItemDecoration(size: Int) : RecyclerView.ItemDecoration() {
-    private val margin: Int
-
-    init {
-        margin = size
-    }
-
-    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
-        outRect.set(margin, margin, margin, margin)
-    }
-}
