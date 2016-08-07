@@ -1,13 +1,13 @@
 package org.viktorot.notefy.notes_list
 
-import android.graphics.Rect
+import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.View
 import org.viktorot.notefy.R
-import org.viktorot.notefy.adapters.NumberedAdapter
+import org.viktorot.notefy.new_note.NewNoteActivity
 
 class NotesListActivity : AppCompatActivity() {
 
@@ -16,21 +16,16 @@ class NotesListActivity : AppCompatActivity() {
 
         setContentView(R.layout.notes_list)
 
-        var iconRecyclerView = findViewById(R.id.icon_grid) as RecyclerView
-        iconRecyclerView.layoutManager = GridLayoutManager(this, 2)
-        iconRecyclerView.adapter = NumberedAdapter(30)
+        var iconRecyclerView = findViewById(R.id.noteList) as RecyclerView
+        iconRecyclerView.layoutManager = LinearLayoutManager(this)
+        iconRecyclerView.adapter = NotesListAdapter()
+
+        var fab = findViewById(R.id.fab) as FloatingActionButton
+        fab.setOnClickListener { view ->
+            val intent: Intent = Intent(this, NewNoteActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
 }
-
-//private class MarginItemDecoration(size: Int) : RecyclerView.ItemDecorationString() {
-//    private val margin: Int
-//
-//    init {
-//        margin = size
-//    }
-//
-//    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
-//        outRect.set(margin, margin, margin, margin)
-//    }
-//}

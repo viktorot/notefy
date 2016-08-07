@@ -4,23 +4,14 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.graphics.Point
-import android.graphics.Rect
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v4.view.animation.FastOutLinearInInterpolator
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.*
-import android.view.animation.Animation
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.Toast
 import org.viktorot.notefy.R
-import org.viktorot.notefy.adapters.NumberedAdapter
 import org.viktorot.notefy.notes_list.NotesListActivity
 
 class MainActivity : AppCompatActivity() {
@@ -30,43 +21,6 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.main_activity)
 
-//        var selected: Boolean = true
-//
-//        val target = findViewById(R.id.vju)
-//        val targetSelected = findViewById(R.id.vjuSelected)
-//
-//        val gestureListener = object: GestureDetector.SimpleOnGestureListener() {
-//            override fun onDown(e: MotionEvent?): Boolean {
-//                return true
-//            }
-//
-//            override fun onSingleTapUp(e: MotionEvent?): Boolean {
-//                val x = if(e == null) 0 else e.x.toInt()
-//                val y = if(e == null) 0 else e.y.toInt()
-//
-//                target.visibility = View.VISIBLE
-//
-//                val animator: Animator
-//                if(selected) {
-//                    animator = getHideAnimator(target, x, y)
-//                }
-//                else {
-//                    animator = getRevealAnimator(target, x, y)
-//                }
-//
-//                selected = !selected;
-//                animator.start()
-//
-//                return true
-//            }
-//        }
-//
-//        var gestureDetector = GestureDetector(this, gestureListener)
-//
-//        target.setOnTouchListener { view, motionEvent -> gestureDetector.onTouchEvent(motionEvent) }
-//
-//        targetSelected.setOnTouchListener { view, motionEvent -> gestureDetector.onTouchEvent(motionEvent) }
-
 
         val fab = findViewById(R.id.fab) as FloatingActionButton
         fab.setOnClickListener { view ->
@@ -75,15 +29,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.notefy_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
 
         val toolbar = findViewById(R.id.toolbar) as Toolbar

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="org.viktorot.notefy"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.viktorot.notefy">
 
     <application
         android:name=".NotefyApplication"
@@ -8,27 +8,33 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".view.MainActivity"
+            android:name=".notes_list.NotesListActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".view.EditActivity"
-                  android:label="Edit"
-                  android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".new_note.NewNoteActivity"
+            android:label="New Note"
+            android:parentActivityName=".notes_list.NotesListActivity" />
 
-        <activity android:name=".notes_list.NotesListActivity"
-            android:label="Notes Activity"/>
+        <activity
+            android:name=".view.EditActivity"
+            android:label="Edit"
+            android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".view.DeletePopupActivity"
-                  android:theme="@style/AppTheme.DeletePopup"
-                  android:excludeFromRecents="true"
-                  android:noHistory="true"/>
+        <activity
+            android:name=".view.DeletePopupActivity"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@style/AppTheme.DeletePopup" />
+
     </application>
 
 </manifest>
