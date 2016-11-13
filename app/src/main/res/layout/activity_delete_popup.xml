@@ -4,40 +4,5 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <!--<TextView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textStyle="bold"-->
-        <!--android:textSize="20sp"-->
-        <!--android:paddingBottom="10dp"-->
-        <!--android:textColor="@android:color/black"-->
-        <!--android:text="@string/delete_notification_title"/>-->
-
-    <!--<TextView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textSize="15sp"-->
-        <!--android:textColor="@android:color/black"-->
-        <!--android:text="@string/delete_notification_content"/>-->
-
-    <!--<LinearLayout-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:gravity="right|bottom">-->
-
-        <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Edit"-->
-            <!--style="@style/Widget.AppCompat.Button.Borderless"/>-->
-
-        <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Cancel"-->
-            <!--style="@style/Widget.AppCompat.Button.Borderless"/>-->
-
-    <!--</LinearLayout>-->
 
 </LinearLayout>
