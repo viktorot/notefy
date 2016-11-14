@@ -5,14 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    android:padding="10dp"
-    android:background="@color/transparent">
+    android:layout_margin="10dp"
+    android:background="@drawable/rounded_corner_background">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#ff0"/>
+        android:background="@color/transparent"/>
 
     <!--<org.viktorot.notefy.view.IconAnimationView-->
         <!--android:layout_width="wrap_content"-->

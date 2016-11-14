@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <solid android:color="@color/white" />
+
+    <padding android:left="@dimen/note_background_padding"
+        android:top="@dimen/note_background_padding"
+        android:right="@dimen/note_background_padding"
+        android:bottom="@dimen/note_background_padding" />
+
+    <corners android:bottomLeftRadius="@dimen/corner_radius"
+        android:bottomRightRadius="@dimen/corner_radius"
+        android:topLeftRadius="@dimen/corner_radius"
+        android:topRightRadius="@dimen/corner_radius" />
+
+</shape>

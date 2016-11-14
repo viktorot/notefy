@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.viktorot.notefy.R
 
-import kotlinx.android.synthetic.main.new_note_fragment.*
+import kotlinx.android.synthetic.main.fragment_new_note.*
 import org.viktorot.notefy.base.ViewCallbacks
 
 class NoteFragment : Fragment() {
@@ -44,7 +44,7 @@ class NoteFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if(inflater != null) {
-            val layout = inflater.inflate(R.layout.new_note_fragment, container, false)
+            val layout = inflater.inflate(R.layout.fragment_new_note, container, false)
             return layout
         }
         else {
