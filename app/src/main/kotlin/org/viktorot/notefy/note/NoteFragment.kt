@@ -12,6 +12,7 @@ import org.viktorot.notefy.R
 
 import kotlinx.android.synthetic.main.fragment_new_note.*
 import org.viktorot.notefy.base.ViewCallbacks
+import org.viktorot.notefy.dialogs.ImagePickerDialog
 
 class NoteFragment : Fragment() {
 
@@ -19,6 +20,7 @@ class NoteFragment : Fragment() {
         @JvmStatic
         val TAG:String = NoteFragment::class.java.simpleName
 
+        @JvmStatic
         fun newInstance() : NoteFragment {
             val fragment = NoteFragment()
 
@@ -61,6 +63,11 @@ class NoteFragment : Fragment() {
         toolbar.navigationIcon = ContextCompat.getDrawable(context, R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener {
             listener.closeFragment()
+        }
+
+        btn.setOnClickListener {
+            val dialog: ImagePickerDialog = ImagePickerDialog.newInstance()
+            dialog.show(childFragmentManager, ImagePickerDialog.TAG)
         }
 
     }
