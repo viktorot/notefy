@@ -1,6 +1,7 @@
 package org.viktorot.notefy.note
 
 import android.content.Context
+import android.database.Cursor
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -11,8 +12,14 @@ import android.view.ViewGroup
 import org.viktorot.notefy.R
 
 import kotlinx.android.synthetic.main.fragment_new_note.*
+import org.jetbrains.anko.db.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import org.viktorot.notefy.base.ViewCallbacks
+import org.viktorot.notefy.db.NoteDbContract
+import org.viktorot.notefy.db.NoteDbHelper
 import org.viktorot.notefy.dialogs.ImagePickerDialog
+import org.viktorot.notefy.models.NoteDbModel
 
 class NoteFragment : Fragment() {
 
@@ -40,20 +47,12 @@ class NoteFragment : Fragment() {
             listener = activity as ViewCallbacks
         }
         catch (ex: ClassCastException) {
-            throw ClassCastException("${activity} must implement base.ViewCallbacks")
+            throw ClassCastException("$activity must implement base.ViewCallbacks")
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if(inflater != null) {
-            val layout = inflater.inflate(R.layout.fragment_new_note, container, false)
-            return layout
-        }
-        else {
-            Log.e(TAG, "inflater is null")
-            return null
-        }
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_new_note, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -66,10 +65,44 @@ class NoteFragment : Fragment() {
         }
 
         btn.setOnClickListener {
-            val dialog: ImagePickerDialog = ImagePickerDialog.newInstance()
-            dialog.show(childFragmentManager, ImagePickerDialog.TAG)
+//            val dialog: ImagePickerDialog = ImagePickerDialog.newInstance()
+//            dialog.show(childFragmentManager, ImagePickerDialog.TAG)
+            addNote("Viktor")
         }
 
+        read_btn.setOnClickListener {
+            loadNote()
+        }
+    }
+
+    private fun addNote(title: String) {
+        val noteDb: NoteDbHelper = NoteDbHelper.getInstance(context)
+
+        doAsync {
+            val result = noteDb.use {
+                insert(NoteDbContract.TABLE_NAME,
+                        NoteDbContract.TITLE to title,
+                        NoteDbContract.TIMESTAMP to 123)
+            }
+            uiThread {
+                Log.d(TAG, result.toString())
+            }
+        }
+    }
+
+    private fun loadNote() {
+        val noteDb: NoteDbHelper = NoteDbHelper.getInstance(context)
+
+        doAsync {
+            val result = noteDb.use {
+                select(NoteDbContract.TABLE_NAME).exec {
+                    parseList(rowParser(::NoteDbModel))
+                }
+            }
+            uiThread {
+                Log.d(TAG, result.toString())
+            }
+        }
     }
 
 }

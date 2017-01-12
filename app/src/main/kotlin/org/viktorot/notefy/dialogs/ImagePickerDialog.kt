@@ -8,11 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import org.viktorot.notefy.R
 
-
-/**
- * Created by viktorot on 11/14/16.
- */
-
 class ImagePickerDialog : BottomSheetDialogFragment() {
 
     companion object {
@@ -25,15 +20,8 @@ class ImagePickerDialog : BottomSheetDialogFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (inflater != null) {
-            val v: View = inflater.inflate(R.layout.dialog_image_list, container, false)
-            return v
-        }
-        else {
-            Log.w(TAG, "inflater is null")
-            return null
-        }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.dialog_image_list, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {

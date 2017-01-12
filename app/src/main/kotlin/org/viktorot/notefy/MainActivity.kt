@@ -9,7 +9,7 @@ import android.view.View
 import org.viktorot.notefy.base.ViewCallbacks
 import org.viktorot.notefy.note.NoteFragment
 
-import kotlinx.android.synthetic.main.activity_main.*;
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), ViewCallbacks {
 
@@ -30,9 +30,7 @@ class MainActivity : AppCompatActivity(), ViewCallbacks {
         toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            navigateToNote()
-        }
+        fab.setOnClickListener { view -> navigateToNote() }
     }
 
     override fun onBackPressed() {
