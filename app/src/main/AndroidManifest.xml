@@ -19,10 +19,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".note.NoteActivity"
-            android:parentActivityName=".notes_list.NotesListActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".view.EditActivity"
             android:label="Edit"
             android:theme="@style/AppTheme.NoActionBar" />

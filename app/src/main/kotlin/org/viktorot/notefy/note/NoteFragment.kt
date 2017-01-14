@@ -1,7 +1,6 @@
 package org.viktorot.notefy.note
 
 import android.content.Context
-import android.database.Cursor
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -9,17 +8,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import org.viktorot.notefy.R
-
-import kotlinx.android.synthetic.main.fragment_new_note.*
-import org.jetbrains.anko.db.*
+import org.jetbrains.anko.db.insert
+import org.jetbrains.anko.db.parseList
+import org.jetbrains.anko.db.rowParser
+import org.jetbrains.anko.db.select
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import org.viktorot.notefy.R
 import org.viktorot.notefy.base.ViewCallbacks
 import org.viktorot.notefy.db.NoteDbContract
 import org.viktorot.notefy.db.NoteDbHelper
-import org.viktorot.notefy.dialogs.ImagePickerDialog
 import org.viktorot.notefy.models.NoteDbModel
+
+import kotlinx.android.synthetic.main.fragment_new_note.*
+import org.jetbrains.anko.onClick
 
 class NoteFragment : Fragment() {
 
@@ -28,10 +30,10 @@ class NoteFragment : Fragment() {
         val TAG:String = NoteFragment::class.java.simpleName
 
         @JvmStatic
-        fun newInstance() : NoteFragment {
+        fun newInstance(): NoteFragment {
             val fragment = NoteFragment()
 
-            val args = Bundle()
+            val args: Bundle = Bundle()
             fragment.arguments = args
 
             return fragment
@@ -64,14 +66,8 @@ class NoteFragment : Fragment() {
             listener.closeFragment()
         }
 
-        btn.setOnClickListener {
-//            val dialog: ImagePickerDialog = ImagePickerDialog.newInstance()
-//            dialog.show(childFragmentManager, ImagePickerDialog.TAG)
-            addNote("Viktor")
-        }
-
-        read_btn.setOnClickListener {
-            loadNote()
+        image_btn.onClick {
+            loadNotes()
         }
     }
 
@@ -90,7 +86,7 @@ class NoteFragment : Fragment() {
         }
     }
 
-    private fun loadNote() {
+    private fun loadNotes() {
         val noteDb: NoteDbHelper = NoteDbHelper.getInstance(context)
 
         doAsync {

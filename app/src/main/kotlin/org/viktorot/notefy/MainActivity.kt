@@ -10,6 +10,7 @@ import org.viktorot.notefy.base.ViewCallbacks
 import org.viktorot.notefy.note.NoteFragment
 
 import kotlinx.android.synthetic.main.activity_main.*
+import org.viktorot.notefy.notes_list.NoteListFragment
 
 class MainActivity : AppCompatActivity(), ViewCallbacks {
 
@@ -29,6 +30,8 @@ class MainActivity : AppCompatActivity(), ViewCallbacks {
 
         toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
+
+        navigateToNoteList()
 
         fab.setOnClickListener { view -> navigateToNote() }
     }
@@ -56,6 +59,15 @@ class MainActivity : AppCompatActivity(), ViewCallbacks {
                 .commit()
 
         showFab(false)
+    }
+
+    private fun navigateToNoteList() {
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.container, NoteListFragment.newInstance())
+                .commit()
+
+        showFab()
     }
 
     override fun closeFragment() {

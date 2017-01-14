@@ -12,20 +12,15 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.*
 import org.viktorot.notefy.R
-import org.viktorot.notefy.notes_list.NotesListActivity
 
-class MainActivity : AppCompatActivity() {
+class AnimationTestActivty : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
 
-
         val fab = findViewById(R.id.fab) as FloatingActionButton
-        fab.setOnClickListener { view ->
-            startListActivity()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -115,11 +110,5 @@ class MainActivity : AppCompatActivity() {
 
         return animator
     }
-
-    private fun startListActivity() {
-        val intent = Intent(this, NotesListActivity::class.java)
-        startActivity(intent)
-    }
-
 }
 
