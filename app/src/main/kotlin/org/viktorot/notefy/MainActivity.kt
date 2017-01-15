@@ -7,7 +7,7 @@ import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
 import org.viktorot.notefy.base.ViewCallbacks
-import org.viktorot.notefy.note.NoteFragment
+import org.viktorot.notefy.note.NoteDetailsFragment
 
 import kotlinx.android.synthetic.main.activity_main.*
 import org.viktorot.notefy.notes_list.NoteListFragment
@@ -21,6 +21,8 @@ class MainActivity : AppCompatActivity(), ViewCallbacks {
 
     var toolbar:Toolbar? = null
 
+    fun isBackstackEmpty(): Boolean = supportFragmentManager.backStackEntryCount == 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -31,13 +33,17 @@ class MainActivity : AppCompatActivity(), ViewCallbacks {
         toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
-        navigateToNoteList()
-
         fab.setOnClickListener { view -> navigateToNote() }
     }
 
     override fun onBackPressed() {
-        supportFragmentManager.popBackStackImmediate()
+        if (isBackstackEmpty()) {
+            finish()
+        }
+        else {
+            supportFragmentManager.popBackStackImmediate()
+            updateFabVisibility()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -54,25 +60,20 @@ class MainActivity : AppCompatActivity(), ViewCallbacks {
         supportFragmentManager
                 .beginTransaction()
                 .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_right_out, R.anim.slide_right_in, R.anim.slide_right_out)
-                .replace(R.id.container, NoteFragment.newInstance())
-                .addToBackStack(NoteFragment.TAG)
+                .replace(R.id.fullscreen_container, NoteDetailsFragment.newInstance())
+                .addToBackStack(NoteDetailsFragment.TAG)
                 .commit()
 
         showFab(false)
     }
 
-    private fun navigateToNoteList() {
-        supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.container, NoteListFragment.newInstance())
-                .commit()
-
-        showFab()
-    }
 
     override fun closeFragment() {
-        supportFragmentManager.popBackStack()
-        showFab()
+        onBackPressed()
+    }
+
+    private fun updateFabVisibility() {
+        showFab(isBackstackEmpty())
     }
 
     fun showFab(show: Boolean = true) {
@@ -81,5 +82,4 @@ class MainActivity : AppCompatActivity(), ViewCallbacks {
             false -> fab.visibility = View.GONE
         }
     }
-
 }

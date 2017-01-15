@@ -9,29 +9,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.jetbrains.anko.db.insert
-import org.jetbrains.anko.db.parseList
-import org.jetbrains.anko.db.rowParser
-import org.jetbrains.anko.db.select
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.onClick
 import org.jetbrains.anko.uiThread
 import org.viktorot.notefy.R
 import org.viktorot.notefy.base.ViewCallbacks
 import org.viktorot.notefy.db.NoteDbContract
 import org.viktorot.notefy.db.NoteDbHelper
-import org.viktorot.notefy.models.NoteDbModel
 
-import kotlinx.android.synthetic.main.fragment_new_note.*
-import org.jetbrains.anko.onClick
+import kotlinx.android.synthetic.main.fragment_note_details.*
 
-class NoteFragment : Fragment() {
+class NoteDetailsFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        val TAG:String = NoteFragment::class.java.simpleName
+        val TAG:String = NoteDetailsFragment::class.java.simpleName
 
         @JvmStatic
-        fun newInstance(): NoteFragment {
-            val fragment = NoteFragment()
+        fun newInstance(): NoteDetailsFragment {
+            val fragment = NoteDetailsFragment()
 
             val args: Bundle = Bundle()
             fragment.arguments = args
@@ -39,6 +35,8 @@ class NoteFragment : Fragment() {
             return fragment
         }
     }
+
+    var isNew: Boolean = true
 
     lateinit var listener: ViewCallbacks
 
@@ -54,7 +52,7 @@ class NoteFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_new_note, container, false)
+        return inflater.inflate(R.layout.fragment_note_details, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,7 +65,7 @@ class NoteFragment : Fragment() {
         }
 
         image_btn.onClick {
-            loadNotes()
+            addNote(title.text.toString())
         }
     }
 
@@ -78,25 +76,11 @@ class NoteFragment : Fragment() {
             val result = noteDb.use {
                 insert(NoteDbContract.TABLE_NAME,
                         NoteDbContract.TITLE to title,
+                        NoteDbContract.CONTENT to "[placeholder]",
                         NoteDbContract.TIMESTAMP to 123)
             }
             uiThread {
-                Log.d(TAG, result.toString())
-            }
-        }
-    }
-
-    private fun loadNotes() {
-        val noteDb: NoteDbHelper = NoteDbHelper.getInstance(context)
-
-        doAsync {
-            val result = noteDb.use {
-                select(NoteDbContract.TABLE_NAME).exec {
-                    parseList(rowParser(::NoteDbModel))
-                }
-            }
-            uiThread {
-                Log.d(TAG, result.toString())
+                Log.d(TAG, "note added. result => $result")
             }
         }
     }
