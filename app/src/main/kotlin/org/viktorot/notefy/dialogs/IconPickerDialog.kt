@@ -2,19 +2,14 @@ package org.viktorot.notefy.dialogs
 
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment
-import android.support.v4.content.ContextCompat
+import android.support.v7.widget.GridLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.GridLayout
-import android.widget.ImageButton
-import android.widget.ImageView
-import org.viktorot.notefy.R
-
 import kotlinx.android.synthetic.main.dialog_icon_list.*
-import org.jetbrains.anko.onClick
+import org.viktorot.notefy.R
+import java.util.*
 
 class IconPickerDialog : BottomSheetDialogFragment() {
 
@@ -28,16 +23,17 @@ class IconPickerDialog : BottomSheetDialogFragment() {
         }
     }
 
+    lateinit var adapter: IconAdapter
     val GRID_SIZE:Int = 2
 
-    val iconList:List<Int> = listOf (
+    val iconList:ArrayList<Int> = arrayListOf (
             R.drawable.ic_bugdroid_vector,
             R.drawable.ic_check_vector,
             R.drawable.ic_paperclip_vector,
             R.drawable.ic_paint_brush_vector
     )
 
-    var clickAction: (Int) -> Unit = { Log.w(TAG, "click action not set") }
+    var onIconSelected: (Int) -> Unit = { Log.w(TAG, "click action not set") }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_icon_list, container, false)
@@ -45,39 +41,21 @@ class IconPickerDialog : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        var col:Int = 0
-        var row: Int = 0
-
-        val iconSize = context.resources.getDimension(R.dimen.icon_item_size).toInt()
-
-        iconList.forEach { iconResId ->
-            val button = ImageButton(context)
-            val layoutParams: GridLayout.LayoutParams = GridLayout.LayoutParams()
-
-            layoutParams.height = iconSize
-            layoutParams.width = iconSize
-            layoutParams.rowSpec = GridLayout.spec(row, GridLayout.CENTER)
-            layoutParams.rowSpec = GridLayout.spec(col, GridLayout.CENTER)
-
-            button.scaleType = ImageView.ScaleType.FIT_XY
-            button.layoutParams = layoutParams
-            button.setImageResource(iconResId)
-
-            Log.d(TAG, "row => $row, col => $col")
-
-            grid.addView(button)
-
-            col++
-            if (col == GRID_SIZE) {
-                row++
-                col = 0
-            }
-        }
-
+        initRecyclerView()
     }
 
-    fun doOnClick(action: (Int) -> Unit) {
-        clickAction = action
+    private fun initAdapter() {
+        adapter = IconAdapter(context, iconList, { resId -> onIconClick(resId) })
+    }
+
+    private fun initRecyclerView() {
+        initAdapter()
+
+        icon_grid.layoutManager = GridLayoutManager(context, GRID_SIZE)
+        icon_grid.adapter = adapter
+    }
+
+    private fun onIconClick(iconResId: Int) {
+        onIconSelected(iconResId)
     }
 }

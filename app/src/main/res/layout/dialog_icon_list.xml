@@ -1,26 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:background="#0f0">
 
-    <GridLayout
-        android:id="@+id/grid"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/icon_grid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_gravity="center" />
 
-        <!--<ImageButton-->
-            <!--android:id="@+id/btn1"-->
-            <!--android:layout_width="70dp"-->
-            <!--android:layout_height="70dp"-->
-            <!--app:srcCompat="@drawable/ic_check_vector"-->
-            <!--android:scaleType="fitXY"-->
-            <!--android:layout_row="0"-->
-            <!--android:layout_column="0"/>-->
-
-    </GridLayout>
-
-
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>

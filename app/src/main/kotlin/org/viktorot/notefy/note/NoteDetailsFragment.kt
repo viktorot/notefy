@@ -18,6 +18,7 @@ import org.viktorot.notefy.db.NoteDbContract
 import org.viktorot.notefy.db.NoteDbHelper
 
 import kotlinx.android.synthetic.main.fragment_note_details.*
+import org.jetbrains.anko.imageResource
 import org.viktorot.notefy.dialogs.IconPickerDialog
 
 class NoteDetailsFragment : Fragment() {
@@ -72,8 +73,8 @@ class NoteDetailsFragment : Fragment() {
 
     private fun showIconPopup() {
         val popup = IconPickerDialog.newInstance()
-        popup.doOnClick { num ->
-            Log.d(TAG, "got $num")
+        popup.onIconSelected = { iconResId: Int ->
+            image_btn.imageResource = iconResId
         }
 
         popup.show(childFragmentManager, IconPickerDialog.TAG)
