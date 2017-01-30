@@ -27,13 +27,18 @@
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_add_vector"/>
 
-
-    <fragment
-        android:id="@+id/details_fragment"
+    <FrameLayout
+        android:id="@+id/fragment_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        class="org.viktorot.notefy.notes_list.NoteListFragment"
         android:layout_marginTop="?attr/actionBarSize" />
+
+    <!--<fragment-->
+        <!--android:id="@+id/details_fragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--class="org.viktorot.notefy.notes_list.NoteListFragment"-->
+        <!--android:layout_marginTop="?attr/actionBarSize" />-->
 
     <FrameLayout
         android:id="@+id/fullscreen_container"

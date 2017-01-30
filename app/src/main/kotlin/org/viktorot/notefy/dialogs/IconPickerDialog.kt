@@ -57,5 +57,6 @@ class IconPickerDialog : BottomSheetDialogFragment() {
 
     private fun onIconClick(iconResId: Int) {
         onIconSelected(iconResId)
+        dismiss()
     }
 }

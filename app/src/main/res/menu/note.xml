@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_pin_note"
+        android:title="[Pin note]"
+        android:icon="@drawable/ic_poop_vector"
+        android:visible="true"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_save_note"
+        android:title="[Save note]"
+        android:icon="@drawable/ic_check_vector"
+        android:visible="true"
+        app:showAsAction="always" />
+
+</menu>

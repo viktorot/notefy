@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import org.jetbrains.anko.db.*
+import org.viktorot.notefy.models.NoteDbModel
 
 class NoteDbHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, NoteDbContract.TABLE_NAME, null, NoteDbContract.VERSION) {
 
@@ -33,8 +34,11 @@ class NoteDbHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, NoteDbContract.T
         db.createTable(NoteDbContract.TABLE_NAME, true,
                 NoteDbContract.PRIMARY_KEY to INTEGER + PRIMARY_KEY + UNIQUE,
                 NoteDbContract.TITLE to TEXT + NOT_NULL,
-                NoteDbContract.CONTENT to TEXT,
-                NoteDbContract.TIMESTAMP to INTEGER)
+                NoteDbContract.CONTENT to TEXT + NOT_NULL,
+                NoteDbContract.TIMESTAMP to INTEGER,
+                NoteDbContract.IMAGE to INTEGER,
+                NoteDbContract.PINNED to INTEGER
+        )
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -45,7 +49,25 @@ class NoteDbHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, NoteDbContract.T
 
         db.dropTable(NoteDbContract.TABLE_NAME, true)
     }
-}
 
-//val Context.database: NoteDbHelper
-//    get() = NoteDbHelper.getInstance(applicationContext)
+    fun add(title: String, content: String, image: Int, pinned: Boolean, timestamp: Int): Long {
+        return use {
+            insert(NoteDbContract.TABLE_NAME,
+                    NoteDbContract.TITLE to title,
+                    NoteDbContract.CONTENT to content,
+                    NoteDbContract.IMAGE to image,
+                    NoteDbContract.PINNED to if(pinned) 1 else 0,
+                    NoteDbContract.TIMESTAMP to timestamp)
+        }
+    }
+
+    fun getAll(): List<NoteDbModel> {
+        return use {
+            select(NoteDbContract.TABLE_NAME).exec {
+                parseList(rowParser { id: Int, title: String,  content: String, timestamp: Int, image: Int, pinned: Int  ->
+                    NoteDbModel(id, title, content, image, pinned == 1, timestamp)
+                })
+            }
+        }
+    }
+}

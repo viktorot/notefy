@@ -15,7 +15,9 @@ object NoteDbContract {
     val CONTENT: String = "content"
     @JvmField
     val TIMESTAMP: String = "timestamp"
-//    @JvmField
-//    val IMAGE: String = "image"
+    @JvmField
+    val IMAGE: String = "image"
+    @JvmField
+    val PINNED: String = "pinned"
 
 }

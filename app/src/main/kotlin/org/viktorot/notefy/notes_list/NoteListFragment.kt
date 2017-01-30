@@ -15,6 +15,7 @@ import org.jetbrains.anko.db.rowParser
 import org.jetbrains.anko.db.select
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import org.viktorot.notefy.database
 import org.viktorot.notefy.db.NoteDbContract
 import org.viktorot.notefy.db.NoteDbHelper
 import org.viktorot.notefy.models.NoteDbModel
@@ -52,21 +53,33 @@ class NoteListFragment : Fragment() {
         note_list_recycler.layoutManager = layoutManger
 
         adapter = NoteListAdapter()
-
         note_list_recycler.adapter = adapter
+    }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart")
         loadNotes()
     }
 
-    private fun loadNotes() {
-        val noteDb: NoteDbHelper = NoteDbHelper.getInstance(context)
+    override fun onPause() {
+        Log.d(TAG, "onPause")
+        super.onPause()
+    }
 
+    override fun onStop() {
+        Log.d(TAG, "onStop")
+        super.onStop()
+    }
+
+    private fun loadNotes() {
         doAsync {
-            val result = noteDb.use {
-                select(NoteDbContract.TABLE_NAME).exec {
-                    parseList(rowParser(::NoteDbModel))
-                }
-            }
+            val result = context.database.getAll()
             uiThread {
                 adapter.setItems(result)
             }

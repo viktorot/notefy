@@ -2,8 +2,6 @@ package org.viktorot.notefy
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
 import org.viktorot.notefy.base.ViewCallbacks
@@ -19,25 +17,25 @@ class MainActivity : AppCompatActivity(), ViewCallbacks {
         val TAG:String = MainActivity::class.java.simpleName
     }
 
-    var toolbar:Toolbar? = null
-
-    fun isBackstackEmpty(): Boolean = supportFragmentManager.backStackEntryCount == 0
+    val isBackstackEmpty: Boolean
+        get() = supportFragmentManager.backStackEntryCount == 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
-
-        val fab = findViewById(R.id.fab) as FloatingActionButton
-
-        toolbar = findViewById(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
-
         fab.setOnClickListener { view -> navigateToNote() }
+
+        navigateToNoteList()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setToolbar()
     }
 
     override fun onBackPressed() {
-        if (isBackstackEmpty()) {
+        if (isBackstackEmpty) {
             finish()
         }
         else {
@@ -54,6 +52,18 @@ class MainActivity : AppCompatActivity(), ViewCallbacks {
         else {
             return super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun setToolbar() {
+        toolbar.title = "[Notefy]"
+        setSupportActionBar(toolbar)
+    }
+
+    private fun navigateToNoteList() {
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_holder, NoteListFragment.newInstance())
+                .commit()
     }
 
     private fun navigateToNote() {
@@ -73,7 +83,7 @@ class MainActivity : AppCompatActivity(), ViewCallbacks {
     }
 
     private fun updateFabVisibility() {
-        showFab(isBackstackEmpty())
+        showFab(isBackstackEmpty)
     }
 
     fun showFab(show: Boolean = true) {
