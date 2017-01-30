@@ -8,7 +8,6 @@ import org.viktorot.notefy.base.ViewCallbacks
 import org.viktorot.notefy.note.NoteDetailsFragment
 
 import kotlinx.android.synthetic.main.activity_main.*
-import org.viktorot.notefy.notes_list.NoteListFragment
 
 class MainActivity : AppCompatActivity(), ViewCallbacks {
 
@@ -25,8 +24,6 @@ class MainActivity : AppCompatActivity(), ViewCallbacks {
 
         setContentView(R.layout.activity_main)
         fab.setOnClickListener { view -> navigateToNote() }
-
-        navigateToNoteList()
     }
 
     override fun onResume() {
@@ -40,7 +37,7 @@ class MainActivity : AppCompatActivity(), ViewCallbacks {
         }
         else {
             supportFragmentManager.popBackStackImmediate()
-            updateFabVisibility()
+            showFab(isBackstackEmpty)
         }
     }
 
@@ -59,13 +56,6 @@ class MainActivity : AppCompatActivity(), ViewCallbacks {
         setSupportActionBar(toolbar)
     }
 
-    private fun navigateToNoteList() {
-        supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragment_holder, NoteListFragment.newInstance())
-                .commit()
-    }
-
     private fun navigateToNote() {
         supportFragmentManager
                 .beginTransaction()
@@ -80,10 +70,6 @@ class MainActivity : AppCompatActivity(), ViewCallbacks {
 
     override fun closeFragment() {
         onBackPressed()
-    }
-
-    private fun updateFabVisibility() {
-        showFab(isBackstackEmpty)
     }
 
     fun showFab(show: Boolean = true) {
