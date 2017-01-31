@@ -33,6 +33,12 @@ class NoteListFragment : Fragment() {
 
     private lateinit var adapter: NoteListAdapter
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+
+        Log.w(TAG, "is visible => " + isVisibleToUser)
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (inflater != null) {
             val view = inflater.inflate(R.layout.fragment_notes_list, container, false)
