@@ -16,7 +16,7 @@ import org.jetbrains.anko.imageResource
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.uiThread
 import org.viktorot.notefy.R
-import org.viktorot.notefy.base.ViewCallbacks
+import org.viktorot.notefy.base.MainActivityCallback
 import org.viktorot.notefy.database
 import org.viktorot.notefy.dialogs.IconPickerDialog
 import org.viktorot.notefy.timestamp
@@ -42,16 +42,16 @@ class NoteDetailsFragment : Fragment() {
     var iconResId: Int = R.drawable.ic_bugdroid_vector
     var isPinned: Boolean = false
 
-    lateinit var listener: ViewCallbacks
+    lateinit var listener: MainActivityCallback
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
 
         try {
-            listener = activity as ViewCallbacks
+            listener = activity as MainActivityCallback
         }
         catch (ex: ClassCastException) {
-            throw ClassCastException("$activity must implement base.ViewCallbacks")
+            throw ClassCastException("$activity must implement base.MainActivityCallback")
         }
     }
 
@@ -81,7 +81,6 @@ class NoteDetailsFragment : Fragment() {
 
         toolbar.title = "[New note]"
         toolbar.navigationIcon = ContextCompat.getDrawable(context, R.drawable.ic_arrow_back)
-        toolbar.setNavigationOnClickListener { listener.closeFragment() }
 
         image_btn.onClick { showIconPopup() }
     }

@@ -1,103 +1,63 @@
 package org.viktorot.notefy
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.MenuItem
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
-import org.viktorot.notefy.base.ViewCallbacks
-import org.viktorot.notefy.note.NoteDetailsFragment
-
 import kotlinx.android.synthetic.main.activity_main.*
-import org.viktorot.notefy.controllers.NoteListController
+import org.jetbrains.anko.onClick
+import org.viktorot.notefy.base.MainActivityCallback
+import org.viktorot.notefy.controllers.HomeController
+import org.viktorot.notefy.controllers.NoteDetailsController
 
-class MainActivity : AppCompatActivity(), ViewCallbacks {
+class MainActivity : AppCompatActivity(), MainActivityCallback {
 
     companion object {
         @JvmStatic
-        val TAG:String = MainActivity::class.java.simpleName
+        val TAG: String = MainActivity::class.java.simpleName
     }
 
-    val isBackstackEmpty: Boolean
-        get() = supportFragmentManager.backStackEntryCount == 0
+    lateinit var router: Router
 
-        lateinit var router: Router
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-
-            setContentView(R.layout.activity_main)
-
-            fab.setOnClickListener { view ->
-                navigateToNote()
-            }
+        setContentView(R.layout.activity_main)
 
         router = Conductor.attachRouter(this, controller_container, savedInstanceState)
         if (!router.hasRootController()) {
-            router.setRoot(RouterTransaction.with(NoteListController()))
+            router.setRoot(RouterTransaction.with(HomeController()))
         }
 
-        setToolbar()
-    }
+        fab.onClick {
+            openNote()
+        }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "onPause")
+        showFab()
     }
 
     override fun onBackPressed() {
         if (!router.handleBack()) {
             super.onBackPressed()
         }
-
-//        if (isBackstackEmpty) {
-//            finish()
-//        }
-//        else {
-//            supportFragmentManager.popBackStackImmediate()
-//            showFab(isBackstackEmpty)
-//        }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if(item?.itemId == android.R.id.home) {
-            supportFragmentManager.popBackStackImmediate()
-            return true
-        }
-        else {
-            return super.onOptionsItemSelected(item)
-        }
-    }
+    private fun openNote() {
+        val args: Bundle = Bundle()
+        args.putInt("size", 101)
 
-    private fun setToolbar() {
-        toolbar.title = "[Notefy]"
-        setSupportActionBar(toolbar)
-    }
-
-    private fun navigateToNote() {
-        supportFragmentManager
-                .beginTransaction()
-                .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_right_out, R.anim.slide_right_in, R.anim.slide_right_out)
-                .replace(R.id.fullscreen_container, NoteDetailsFragment.newInstance())
-                .addToBackStack(NoteDetailsFragment.TAG)
-                .commit()
+        router.pushController(RouterTransaction.with(NoteDetailsController(args)))
 
         showFab(false)
     }
 
-
-    override fun closeFragment() {
-        onBackPressed()
+    private fun showFab() {
+        showFab(true)
     }
 
-    fun showFab(show: Boolean = true) {
+    override fun showFab(show: Boolean) {
         when (show) {
             true -> fab.visibility = View.VISIBLE
             false -> fab.visibility = View.GONE
