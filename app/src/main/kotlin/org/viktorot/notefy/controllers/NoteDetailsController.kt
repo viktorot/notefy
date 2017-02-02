@@ -96,7 +96,6 @@ class NoteDetailsController(args: Bundle): BaseController(args) {
             imageBtn.imageResource = iconResId
         }
 
-        val compatActivity: AppCompatActivity = activity as AppCompatActivity
-        popup.show(compatActivity.supportFragmentManager, IconPickerDialog.TAG)
+        popup.show(fragmentManager, IconPickerDialog.TAG)
     }
 }
