@@ -9,8 +9,8 @@ import com.bluelinelabs.conductor.RouterTransaction
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.onClick
 import org.viktorot.notefy.base.MainActivityCallback
-import org.viktorot.notefy.controllers.HomeController
-import org.viktorot.notefy.controllers.NoteDetailsController
+import org.viktorot.notefy.notes_list.NoteListController
+import org.viktorot.notefy.note.NoteDetailsController
 
 class MainActivity : AppCompatActivity(), MainActivityCallback {
 
@@ -23,20 +23,25 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
+
+        initToolbar()
+        setSupportActionBar(toolbar)
 
         router = Conductor.attachRouter(this, controller_container, savedInstanceState)
         if (!router.hasRootController()) {
-            router.setRoot(RouterTransaction.with(HomeController()))
+            router.setRoot(RouterTransaction.with(NoteListController()))
         }
 
-        fab.onClick {
-            openNote()
-        }
+        fab.onClick { openNote() }
 
         showFab()
     }
+
+    private fun initToolbar() {
+        toolbar.title = "[Notefy]"
+    }
+
 
     override fun onBackPressed() {
         if (!router.handleBack()) {
@@ -46,7 +51,7 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
 
     private fun openNote() {
         val args: Bundle = Bundle()
-        args.putInt("size", 101)
+        args.putBoolean(NoteDetailsController.IS_NEW_ARG, true)
 
         router.pushController(RouterTransaction.with(NoteDetailsController(args)))
 

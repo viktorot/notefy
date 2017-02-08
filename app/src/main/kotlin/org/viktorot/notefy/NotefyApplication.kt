@@ -10,6 +10,9 @@ class NotefyApplication: Application() {
     }
 }
 
+val String.Companion.empty: String
+    get() = ""
+
 val Context.database: NoteDbHelper
     get() = NoteDbHelper.getInstance(this)
 

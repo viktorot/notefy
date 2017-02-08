@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import org.jetbrains.anko.onClick
 import org.viktorot.notefy.R
 import org.viktorot.notefy.models.NoteDbModel
 import org.viktorot.notefy.models.TaskModel
 
-class NoteListAdapter : RecyclerView.Adapter<NoteViewHolder>() {
+class NoteListAdapter(val itemClickCallback: (id: Int) -> Unit) : RecyclerView.Adapter<NoteViewHolder>() {
     private val items: MutableList<NoteDbModel> = mutableListOf()
 
     init {
@@ -31,6 +32,7 @@ class NoteListAdapter : RecyclerView.Adapter<NoteViewHolder>() {
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val model: NoteDbModel = items[position]
         holder.title.text = model.toString()
+        holder.rootView.onClick { itemClickCallback(model.id) }
     }
 
     override fun getItemCount(): Int {
@@ -39,5 +41,6 @@ class NoteListAdapter : RecyclerView.Adapter<NoteViewHolder>() {
 }
 
 class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    var title: TextView = itemView.findViewById(R.id.title) as TextView
+    val rootView: View = itemView.findViewById(R.id.root_view)
+    val title: TextView = itemView.findViewById(R.id.title) as TextView
 }

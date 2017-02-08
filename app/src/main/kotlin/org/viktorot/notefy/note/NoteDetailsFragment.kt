@@ -10,7 +10,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.*
-import kotlinx.android.synthetic.main.fragment_note_details.*
+import kotlinx.android.synthetic.main.controller_note_details.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.imageResource
 import org.jetbrains.anko.onClick
@@ -69,7 +69,7 @@ class NoteDetailsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_note_details, container, false)
+        return inflater.inflate(R.layout.controller_note_details, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,10 +77,8 @@ class NoteDetailsFragment : Fragment() {
 
         isPinned = false
 
-        (activity as AppCompatActivity).setSupportActionBar(toolbar)
-
-        toolbar.title = "[New note]"
-        toolbar.navigationIcon = ContextCompat.getDrawable(context, R.drawable.ic_arrow_back)
+//        toolbar.title = "[New note]"
+//        toolbar.navigationIcon = ContextCompat.getDrawable(context, R.drawable.ic_arrow_back)
 
         image_btn.onClick { showIconPopup() }
     }
