@@ -2,7 +2,10 @@ package org.viktorot.notefy.base
 
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
+import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +14,11 @@ import butterknife.Unbinder
 import com.bluelinelabs.conductor.Controller
 
 abstract class BaseController: Controller {
+
+    companion object {
+        @JvmStatic
+        val TAG: String = BaseController::class.java.simpleName
+    }
 
     lateinit var unbinder: Unbinder
 
@@ -41,6 +49,7 @@ abstract class BaseController: Controller {
                     return activity as AppCompatActivity
                 }
                 catch (ex: ClassCastException) {
+                    Log.e(TAG, ex.toString())
                     return null
                 }
             }
@@ -49,15 +58,11 @@ abstract class BaseController: Controller {
             }
         }
 
+
+    val actionBar: ActionBar?
+        get() = appCompatActivity!!.supportActionBar
+
     val fragmentManager: FragmentManager?
-        get() {
-            val activity: AppCompatActivity? = appCompatActivity
-            if (appCompatActivity != null) {
-                return appCompatActivity!!.supportFragmentManager
-            }
-            else {
-                return null
-            }
-        }
+        get() = appCompatActivity!!.supportFragmentManager
 
 }

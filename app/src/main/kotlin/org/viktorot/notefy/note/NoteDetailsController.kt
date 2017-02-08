@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.ActionBar
 import android.util.Log
 import android.view.*
 import kotlinx.android.synthetic.main.controller_note_details.view.*
@@ -35,13 +36,7 @@ class NoteDetailsController(args: Bundle): BaseController(args), NoteDetailsView
         setHasOptionsMenu(true)
     }
 
-    override fun inflateView(inflater: LayoutInflater, parent: ViewGroup): View {
-        return inflater.inflate(R.layout.controller_note_details, parent, false)
-    }
-
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-
+    private fun attachCallbacks() {
         try {
             callback = activity as MainActivityCallback
         }
@@ -50,8 +45,14 @@ class NoteDetailsController(args: Bundle): BaseController(args), NoteDetailsView
         }
     }
 
+    override fun inflateView(inflater: LayoutInflater, parent: ViewGroup): View {
+        return inflater.inflate(R.layout.controller_note_details, parent, false)
+    }
+
     override fun onViewCreated(view: View) {
         super.onViewCreated(view)
+
+        attachCallbacks()
 
         val isNew: Boolean = args.getBoolean(IS_NEW_ARG, false)
         val note: NoteDbModel = NoteDbModel.default
@@ -60,8 +61,7 @@ class NoteDetailsController(args: Bundle): BaseController(args), NoteDetailsView
         presenter = NoteDetailsPresenter(NotesRepository(view.context), this)
         presenter.init()
 
-
-        setupToolbar(view)
+        initToolbar()
 
         view.image_btn.onClick {
             showIconPopup()
@@ -70,6 +70,9 @@ class NoteDetailsController(args: Bundle): BaseController(args), NoteDetailsView
 
     override fun onDestroyView(view: View) {
         callback.showFab(true)
+        callback.showBackArrow(false)
+        callback.resetTitle()
+
         super.onDestroyView(view)
     }
 
@@ -99,12 +102,9 @@ class NoteDetailsController(args: Bundle): BaseController(args), NoteDetailsView
         return super.onOptionsItemSelected(item)
     }
 
-    private fun setupToolbar(v: View) {
-//        v.toolbar.title = "[New note]"
-//        v.toolbar.navigationIcon = ContextCompat.getDrawable(applicationContext, R.drawable.ic_arrow_back)
-//        v.toolbar.setNavigationOnClickListener {
-//            router.popCurrentController()
-//        }
+    private fun initToolbar() {
+        actionBar?.title = "[New note]"
+        callback.showBackArrow(true)
     }
 
     private fun setPinnedIconState(item: MenuItem) {

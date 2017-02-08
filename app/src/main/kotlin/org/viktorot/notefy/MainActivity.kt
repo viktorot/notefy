@@ -1,6 +1,7 @@
 package org.viktorot.notefy
 
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.bluelinelabs.conductor.Conductor
@@ -25,8 +26,8 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initToolbar()
         setSupportActionBar(toolbar)
+        supportActionBar?.title = "[Notify]"
 
         router = Conductor.attachRouter(this, controller_container, savedInstanceState)
         if (!router.hasRootController()) {
@@ -35,19 +36,24 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
 
         fab.onClick { openNote() }
 
-        showFab()
+        showFab(true)
+        initToolbar()
     }
-
-    private fun initToolbar() {
-        toolbar.title = "[Notefy]"
-    }
-
 
     override fun onBackPressed() {
         if (!router.handleBack()) {
             super.onBackPressed()
         }
     }
+
+    private fun initToolbar() {
+        showBackArrow(false)
+        toolbar.setNavigationOnClickListener {
+            // TODO: check controller count?
+            router.popCurrentController()
+        }
+    }
+
 
     private fun openNote() {
         val args: Bundle = Bundle()
@@ -58,14 +64,21 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
         showFab(false)
     }
 
-    private fun showFab() {
-        showFab(true)
-    }
-
     override fun showFab(show: Boolean) {
         when (show) {
             true -> fab.visibility = View.VISIBLE
             false -> fab.visibility = View.GONE
         }
+    }
+
+    override fun showBackArrow(show: Boolean) {
+        when (show) {
+            true -> toolbar.navigationIcon = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back)
+            false -> toolbar.navigationIcon = null
+        }
+    }
+
+    override fun resetTitle() {
+        supportActionBar?.title = "[Notify]"
     }
 }
