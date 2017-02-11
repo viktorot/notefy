@@ -1,11 +1,13 @@
 package org.viktorot.notefy.note
 
+import android.support.annotation.DrawableRes
 import android.util.Log
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.viktorot.notefy.base.BasePresenter
-import org.viktorot.notefy.models.NoteDbModel
+import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.repo.NotesRepository
+import org.viktorot.notefy.utils.NoteIcons
 
 class NoteDetailsPresenter(private val repo: NotesRepository, private val view: NoteDetailsView): BasePresenter(repo, view) {
 
@@ -14,15 +16,17 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
     }
 
     var isNew: Boolean = true
-    lateinit var note: NoteDbModel
+    lateinit var note: NoteModel
 
-    fun init(note: NoteDbModel = NoteDbModel.default) {
+    fun init(note: NoteModel = NoteModel.empty) {
         this.note = note
-        isNew = note == NoteDbModel.default
+        isNew = (this.note == NoteModel.empty)
+
+        this.note.pinned = true
     }
 
-    fun saveNote(title: String, content: String, icon: Int, pinned: Boolean) {
-        repo.saveNote(title, content, icon, pinned)
+    fun saveNote() {
+        repo.saveNote(this.note.title, this.note.content, this.note.icon, this.note.pinned)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -39,6 +43,34 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
                 )
     }
 
+
+    fun onTitleUpdate(newValue: String) {
+        this.note.title = newValue
+    }
+
+    fun onContentUpdate(newValue: String) {
+        this.note.content = newValue
+    }
+
+    fun updatePinnedState() {
+        view.setPinned(this.note.pinned)
+    }
+
+    fun togglePinned() {
+        this.note.pinned = !this.note.pinned
+        view.setPinned(this.note.pinned)
+    }
+
+    fun onIconUpdate(@DrawableRes iconResId: Int) {
+        val iconId = NoteIcons.getId(iconResId)
+        this.note.icon = iconId
+    }
+
+
+
+    fun printModel () {
+        Log.d(TAG, this.note.toString())
+    }
 
     override fun cleanUp() {
     }

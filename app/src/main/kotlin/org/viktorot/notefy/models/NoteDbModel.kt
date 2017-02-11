@@ -11,7 +11,7 @@ class NoteDbModel(
         val timestamp: Int) {
 
     companion object {
-        val default: NoteDbModel
+        val empty: NoteDbModel
                 get() = NoteDbModel(-1, String.empty, String.empty, -1, false, -1)
     }
 

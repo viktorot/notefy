@@ -19,7 +19,7 @@ class NotesRepository(val ctx: Context) {
         val db = ctx.database
         return Single.fromCallable {
             val res: Long = db.add(title, content, icon, pinned, ctx.timestamp)
-            res.toInt() == 1
+            res.toInt() != -1
         }
     }
 

@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.dialog_icon_list.*
 import org.viktorot.notefy.R
-import java.util.*
+import org.viktorot.notefy.utils.NoteIcons
 
 class IconPickerDialog : BottomSheetDialogFragment() {
 
@@ -26,13 +26,6 @@ class IconPickerDialog : BottomSheetDialogFragment() {
     lateinit var adapter: IconAdapter
     val GRID_SIZE:Int = 2
 
-    val iconList:ArrayList<Int> = arrayListOf (
-            R.drawable.ic_bugdroid_vector,
-            R.drawable.ic_check_vector,
-            R.drawable.ic_paperclip_vector,
-            R.drawable.ic_paint_brush_vector
-    )
-
     var onIconSelected: (Int) -> Unit = { Log.w(TAG, "click action not set") }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -45,7 +38,8 @@ class IconPickerDialog : BottomSheetDialogFragment() {
     }
 
     private fun initAdapter() {
-        adapter = IconAdapter(context, iconList, { resId -> onIconClick(resId) })
+        val icons: List<Int> = NoteIcons.ICONS.keys.toList()
+        adapter = IconAdapter(context, icons, { resId -> onIconClick(resId) })
     }
 
     private fun initRecyclerView() {

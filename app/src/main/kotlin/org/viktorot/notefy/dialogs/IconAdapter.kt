@@ -13,9 +13,9 @@ import org.jetbrains.anko.onClick
 import org.viktorot.notefy.R
 import java.util.ArrayList
 
-class IconAdapter(ctx: Context, items: ArrayList<Int>, clickAction: (Int) -> Unit) : RecyclerView.Adapter<IconAdapter.ViewHolder>() {
+class IconAdapter(ctx: Context, items: List<Int>, clickAction: (Int) -> Unit) : RecyclerView.Adapter<IconAdapter.ViewHolder>() {
 
-    private val items: ArrayList<Int>
+    private val items: List<Int>
     private val ctx: Context
     private val clickAction: (Int) -> Unit
 

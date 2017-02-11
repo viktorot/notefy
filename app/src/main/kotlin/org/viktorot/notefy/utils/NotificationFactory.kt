@@ -1,4 +1,4 @@
-package org.viktorot.notefy.util
+package org.viktorot.notefy.utils
 
 import android.app.PendingIntent
 import android.content.Context

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import org.viktorot.notefy.R;
-import org.viktorot.notefy.util.NotificationFactory
+import org.viktorot.notefy.utils.NotificationFactory
 
 class EditActivity : AppCompatActivity() {
 
