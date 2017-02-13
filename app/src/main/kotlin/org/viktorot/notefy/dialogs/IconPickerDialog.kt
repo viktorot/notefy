@@ -38,7 +38,7 @@ class IconPickerDialog : BottomSheetDialogFragment() {
     }
 
     private fun initAdapter() {
-        val icons: List<Int> = NoteIcons.ICONS.keys.toList()
+        val icons: List<Int> = NoteIcons.iconResList
         adapter = IconAdapter(context, icons, { resId -> onIconClick(resId) })
     }
 

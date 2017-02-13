@@ -8,15 +8,15 @@ import android.widget.TextView
 import org.jetbrains.anko.onClick
 import org.viktorot.notefy.R
 import org.viktorot.notefy.models.NoteDbModel
-import org.viktorot.notefy.models.TaskModel
+import org.viktorot.notefy.models.NoteModel
 
 class NoteListAdapter(val itemClickCallback: (id: Int) -> Unit) : RecyclerView.Adapter<NoteViewHolder>() {
-    private val items: MutableList<NoteDbModel> = mutableListOf()
+    private val items: MutableList<NoteModel> = mutableListOf()
 
     init {
     }
 
-    fun setItems(newItems: List<NoteDbModel>) {
+    fun setItems(newItems: List<NoteModel>) {
         items.clear()
         items.addAll(newItems)
 
@@ -30,7 +30,7 @@ class NoteListAdapter(val itemClickCallback: (id: Int) -> Unit) : RecyclerView.A
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
-        val model: NoteDbModel = items[position]
+        val model: NoteModel = items[position]
         holder.title.text = model.toString()
         holder.rootView.onClick { itemClickCallback(model.id) }
     }

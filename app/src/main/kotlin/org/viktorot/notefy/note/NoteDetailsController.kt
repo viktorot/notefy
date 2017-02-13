@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.*
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.controller_note_details.view.*
+import org.jetbrains.anko.imageResource
 import org.jetbrains.anko.onClick
 import org.viktorot.notefy.R
 import org.viktorot.notefy.base.BaseController
@@ -32,8 +33,6 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
 
     lateinit var titleSubscription: Disposable
     lateinit var contentSubscription: Disposable
-
-    var iconResId: Int = R.drawable.ic_bugdroid_vector
 
     init {
         setHasOptionsMenu(true)
@@ -116,8 +115,7 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
 
     private fun showIconPopup() {
         val popup = IconPickerDialog.newInstance()
-        popup.onIconSelected = { imgResId: Int ->
-            iconResId = imgResId
+        popup.onIconSelected = { iconResId: Int ->
             presenter.onIconUpdate(iconResId)
         }
 
@@ -134,6 +132,10 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
             true -> pinDrawable.setTint(Color.RED)
             false -> pinDrawable.setTint(Color.BLACK)
         }
+    }
+
+    override fun setIcon(iconResId: Int) {
+        view?.image_btn?.imageResource = iconResId
     }
 
     override fun showSaveSuccess() {

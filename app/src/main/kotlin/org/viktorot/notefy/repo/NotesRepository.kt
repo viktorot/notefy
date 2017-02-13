@@ -1,17 +1,23 @@
 package org.viktorot.notefy.repo
 
 import android.content.Context
+import android.support.annotation.DrawableRes
 import io.reactivex.Single
 import org.viktorot.notefy.database
 import org.viktorot.notefy.models.NoteDbModel
+import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.timestamp
+import org.viktorot.notefy.utils.NoteIcons
 
 class NotesRepository(val ctx: Context) {
 
-    fun getNotes(): Single<List<NoteDbModel>> {
+    fun getNotes(): Single<List<NoteModel>> {
         val db = ctx.database
         return Single.fromCallable {
-            db.getAll()
+            db.getAll().map { dbModel: NoteDbModel ->
+                @DrawableRes val iconResId: Int = NoteIcons.getResId(dbModel.image)
+                NoteModel(dbModel.id, dbModel.title, dbModel.content, iconResId, dbModel.pinned, dbModel.timestamp)
+            }
         }
     }
 

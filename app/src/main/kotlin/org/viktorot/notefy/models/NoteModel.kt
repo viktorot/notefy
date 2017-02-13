@@ -1,9 +1,10 @@
 package org.viktorot.notefy.models
 
+import android.support.annotation.DrawableRes
 import org.viktorot.notefy.empty
 import org.viktorot.notefy.utils.NoteIcons
 
-class NoteModel(var id: Int, var title: String, var content: String, var icon: Int, var pinned: Boolean, var timestamp: Int) {
+class NoteModel(var id: Int, var title: String, var content: String, @DrawableRes var icon: Int, var pinned: Boolean, var timestamp: Int) {
 
 
     companion object {

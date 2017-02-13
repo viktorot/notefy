@@ -21,8 +21,6 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
     fun init(note: NoteModel = NoteModel.empty) {
         this.note = note
         isNew = (this.note == NoteModel.empty)
-
-        this.note.pinned = true
     }
 
     fun saveNote() {
@@ -62,9 +60,10 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
     }
 
     fun onIconUpdate(@DrawableRes iconResId: Int) {
-        val iconId = NoteIcons.getId(iconResId)
-        this.note.icon = iconId
+        this.note.icon = iconResId
+        view.setIcon(this.note.icon)
     }
+
 
 
 

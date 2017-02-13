@@ -6,6 +6,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.viktorot.notefy.base.BasePresenter
 import org.viktorot.notefy.models.NoteDbModel
+import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.repo.NotesRepository
 
 class NoteListPresenter(private val repo: NotesRepository, private val view: NotesListView): BasePresenter(repo, view) {
@@ -16,7 +17,7 @@ class NoteListPresenter(private val repo: NotesRepository, private val view: Not
     }
 
     lateinit private var disposable: Disposable
-    lateinit private var notes: List<NoteDbModel>
+    lateinit private var notes: List<NoteModel>
 
     fun getNotes() {
         view.showLoadingView()
@@ -42,7 +43,7 @@ class NoteListPresenter(private val repo: NotesRepository, private val view: Not
     }
 
     fun onNoteClick(id: Int): Unit {
-        val note: NoteDbModel? = this.notes.find { note: NoteDbModel -> note.id == id }
+        val note: NoteModel? = this.notes.find { note: NoteModel -> note.id == id }
 
         if (note != null) {
             view.navigateToNote(note)

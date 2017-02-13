@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.controller_note_list.view.*
 import org.viktorot.notefy.R
 import org.viktorot.notefy.base.BaseController
 import org.viktorot.notefy.models.NoteDbModel
+import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.note.NoteDetailsController
 import org.viktorot.notefy.repo.NotesRepository
 
@@ -49,7 +50,7 @@ class NoteListController : BaseController(), NotesListView {
         v.note_list_recycler.adapter = adapter
     }
 
-    override fun showNotes(notes: List<NoteDbModel>) {
+    override fun showNotes(notes: List<NoteModel>) {
         val v: View = view ?: return
 
         v.error_view.visibility = View.GONE
@@ -86,7 +87,7 @@ class NoteListController : BaseController(), NotesListView {
         v.note_list_recycler.visibility =  View.GONE
     }
 
-    override fun navigateToNote(note: NoteDbModel) {
+    override fun navigateToNote(note: NoteModel) {
         val args = Bundle()
         args.putBoolean(NoteDetailsController.IS_NEW_ARG, false)
 
