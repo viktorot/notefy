@@ -21,11 +21,23 @@ class NotesRepository(val ctx: Context) {
         }
     }
 
-    fun saveNote(title: String, content: String, icon: Int, pinned: Boolean): Single<Boolean> {
+    fun saveNote(title: String, content: String, @DrawableRes iconResId: Int, pinned: Boolean): Single<Boolean> {
         val db = ctx.database
         return Single.fromCallable {
-            val res: Long = db.add(title, content, icon, pinned, ctx.timestamp)
+            val iconId: Int = NoteIcons.getId(iconResId)
+            val res: Long = db.add(title, content, iconId, pinned, ctx.timestamp)
+
             res.toInt() != -1
+        }
+    }
+
+    fun updateNote(id: Int, title: String, content: String, @DrawableRes iconResId: Int, pinned: Boolean): Single<Boolean> {
+        val db = ctx.database
+        return Single.fromCallable {
+            val iconId: Int = NoteIcons.getId(iconResId)
+            val res: Int = db.update(id, title, content, iconId, pinned, ctx.timestamp)
+
+            res != -1
         }
     }
 

@@ -4,8 +4,9 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.util.Log
 import android.view.*
+import android.widget.ImageButton
+import android.widget.TextView
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.controller_note_details.view.*
 import org.jetbrains.anko.imageResource
@@ -14,6 +15,7 @@ import org.viktorot.notefy.R
 import org.viktorot.notefy.base.BaseController
 import org.viktorot.notefy.base.MainActivityCallback
 import org.viktorot.notefy.dialogs.IconPickerDialog
+import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.repo.NotesRepository
 import org.viktorot.notefy.utils.TextViewTextObservable
 
@@ -26,6 +28,10 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
         @JvmStatic val NOTE: String = "NOTE"
     }
 
+    lateinit var icon: ImageButton
+    lateinit var title: TextView
+    lateinit var content: TextView
+
     lateinit var callback: MainActivityCallback
     lateinit var presenter: NoteDetailsPresenter
 
@@ -33,6 +39,8 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
 
     lateinit var titleSubscription: Disposable
     lateinit var contentSubscription: Disposable
+
+
 
     init {
         setHasOptionsMenu(true)
@@ -50,26 +58,34 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
         return inflater.inflate(R.layout.controller_note_details, parent, false)
     }
 
+    override fun bindViews(view: View) {
+        icon = view.findViewById(R.id.icon) as ImageButton
+        title = view.findViewById(R.id.title) as TextView
+        content = view.findViewById(R.id.content) as TextView
+    }
+
     override fun onViewCreated(view: View) {
         super.onViewCreated(view)
 
         attachCallbacks()
 
-        val isNew: Boolean = args.getBoolean(IS_NEW_ARG, false)
-        Log.d(TAG, "new => $isNew")
+        val note: NoteModel? = args.getParcelable<NoteModel?>(NOTE)
 
         initToolbar()
 
-        presenter = NoteDetailsPresenter(NotesRepository(view.context), this)
-        presenter.init()
+        this.presenter = NoteDetailsPresenter(NotesRepository(view.context), this)
+        when (note == null) {
+            true -> this.presenter.init()
+            false -> this.presenter.init(note as NoteModel)
+        }
 
-        titleSubscription = TextViewTextObservable(view.title)
-                .subscribe { value: CharSequence -> presenter.onTitleUpdate(value.toString()) }
+        this.titleSubscription = TextViewTextObservable(view.title)
+                .subscribe { value: CharSequence -> this.presenter.onTitleUpdate(value.toString()) }
 
-        contentSubscription = TextViewTextObservable(view.content)
-                .subscribe { value: CharSequence -> presenter.onContentUpdate(value.toString()) }
+        this.contentSubscription = TextViewTextObservable(view.content)
+                .subscribe { value: CharSequence -> this.presenter.onContentUpdate(value.toString()) }
 
-        view.image_btn.onClick { showIconPopup() }
+        this.icon.onClick { showIconPopup() }
     }
 
     override fun onDestroyView(view: View) {
@@ -101,7 +117,7 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
                 presenter.togglePinned()
             }
             R.id.action_save_note -> {
-                presenter.printModel()
+                presenter.saveChanges()
             }
             else -> return false
         }
@@ -109,7 +125,7 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
     }
 
     private fun initToolbar() {
-        actionBar?.title = "[New note]"
+        this.actionBar?.title = "[New note]"
         callback.showBackArrow(true)
     }
 
@@ -123,7 +139,11 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
     }
 
     override fun setTitle(title: String) {
-        view?.title?.setText(title)
+        this.title.text = title
+    }
+
+    override fun setContent(title: String) {
+        this.content.text = title
     }
 
     override fun setPinned(pinned: Boolean) {
@@ -135,7 +155,7 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
     }
 
     override fun setIcon(iconResId: Int) {
-        view?.image_btn?.imageResource = iconResId
+        this.icon.imageResource = iconResId
     }
 
     override fun showSaveSuccess() {

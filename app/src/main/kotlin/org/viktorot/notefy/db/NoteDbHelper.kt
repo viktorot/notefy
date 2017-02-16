@@ -50,16 +50,31 @@ class NoteDbHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, NoteDbContract.T
         db.dropTable(NoteDbContract.TABLE_NAME, true)
     }
 
-    fun add(title: String, content: String, image: Int, pinned: Boolean, timestamp: Int): Long {
+    fun add(title: String, content: String, iconId: Int, pinned: Boolean, timestamp: Int): Long {
         return use {
             insert(NoteDbContract.TABLE_NAME,
                     NoteDbContract.TITLE to title,
                     NoteDbContract.CONTENT to content,
-                    NoteDbContract.IMAGE to image,
+                    NoteDbContract.IMAGE to iconId,
                     NoteDbContract.PINNED to if(pinned) 1 else 0,
                     NoteDbContract.TIMESTAMP to timestamp)
         }
     }
+
+    fun update(id: Int, title: String, content: String, iconId: Int, pinned: Boolean, timestamp: Int): Int {
+        return use {
+            update(NoteDbContract.TABLE_NAME,
+                    NoteDbContract.TITLE to title,
+                    NoteDbContract.CONTENT to content,
+                    NoteDbContract.IMAGE to iconId,
+                    NoteDbContract.PINNED to if(pinned) 1 else 0,
+                    NoteDbContract.TIMESTAMP to timestamp)
+                    .where("${NoteDbContract.PRIMARY_KEY} = {id}", "id" to id)
+                    .exec()
+        }
+    }
+
+
 
     fun getAll(): List<NoteDbModel> {
         return use {

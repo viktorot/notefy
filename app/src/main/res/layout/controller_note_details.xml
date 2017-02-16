@@ -11,14 +11,14 @@
         android:layout_height="match_parent">
 
         <ImageButton
-            android:id="@+id/image_btn"
+            android:id="@+id/icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/ic_bugdroid_vector"
             android:contentDescription="@null"
             android:layout_alignParentTop="true" />
 
-        <android.support.design.widget.TextInputEditText
+        <EditText
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -27,11 +27,11 @@
             android:layout_marginLeft="10dp"
             android:singleLine="true"
             android:maxLines="1"
-            android:layout_toRightOf="@id/image_btn"
+            android:layout_toRightOf="@id/icon"
             android:hint="[Title]" />
 
 
-        <android.support.design.widget.TextInputEditText
+        <EditText
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

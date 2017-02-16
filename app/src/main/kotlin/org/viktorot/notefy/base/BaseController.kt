@@ -20,7 +20,7 @@ abstract class BaseController: Controller {
         val TAG: String = BaseController::class.java.simpleName
     }
 
-    lateinit var unbinder: Unbinder
+//    lateinit var unbinder: Unbinder
 
     constructor(): super()
 
@@ -30,15 +30,19 @@ abstract class BaseController: Controller {
 
     open fun onViewCreated(view: View) { }
 
+    open fun bindViews(view: View) { }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
         val view: View = inflateView(inflater, container)
-        unbinder = ButterKnife.bind(this, view)
+//        unbinder = ButterKnife.bind(this, view)
+
+        bindViews(view)
         onViewCreated(view)
         return view
     }
 
     override fun onDestroyView(view: View) {
-        unbinder.unbind()
+//        unbinder.unbind()
         super.onDestroyView(view)
     }
 

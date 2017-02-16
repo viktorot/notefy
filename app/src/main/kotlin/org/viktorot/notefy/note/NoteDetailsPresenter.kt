@@ -7,7 +7,6 @@ import io.reactivex.schedulers.Schedulers
 import org.viktorot.notefy.base.BasePresenter
 import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.repo.NotesRepository
-import org.viktorot.notefy.utils.NoteIcons
 
 class NoteDetailsPresenter(private val repo: NotesRepository, private val view: NoteDetailsView): BasePresenter(repo, view) {
 
@@ -21,9 +20,24 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
     fun init(note: NoteModel = NoteModel.empty) {
         this.note = note
         isNew = (this.note == NoteModel.empty)
+
+        if (!isNew) {
+            view.setIcon(this.note.icon)
+            view.setTitle(this.note.title)
+            view.setContent(this.note.content)
+        }
     }
 
-    fun saveNote() {
+    fun saveChanges() {
+        if (isNew) {
+            saveNote()
+        }
+        else {
+            updateNote()
+        }
+    }
+
+    private fun saveNote() {
         repo.saveNote(this.note.title, this.note.content, this.note.icon, this.note.pinned)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -33,6 +47,21 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
                                 true -> view.showSaveSuccess()
                                 false -> view.showSaveError()
                             }
+                        },
+                        { error ->
+                            Log.e(TAG, error.toString())
+                            view.showSaveError()
+                        }
+                )
+    }
+
+    private fun updateNote() {
+        repo.updateNote(this.note.id, this.note.title, this.note.content, this.note.icon, this.note.pinned)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { success ->
+                            view.showSaveSuccess()
                         },
                         { error ->
                             Log.e(TAG, error.toString())

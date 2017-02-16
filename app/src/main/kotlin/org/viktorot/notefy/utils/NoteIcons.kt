@@ -12,13 +12,6 @@ object NoteIcons {
             Pair(R.drawable.ic_paint_brush_vector, 3)
     )
 
-    private val ICON_IDS: Map<Int, Int> = mapOf(
-            Pair(0, R.drawable.ic_bugdroid_vector),
-            Pair(1, R.drawable.ic_check_vector),
-            Pair(2, R.drawable.ic_paperclip_vector),
-            Pair(3, R.drawable.ic_paint_brush_vector)
-    )
-
     val DEFAULT_ID: Int = 0
 
     val DEFAULT_RES_ID: Int = R.drawable.ic_bugdroid_vector
@@ -31,7 +24,11 @@ object NoteIcons {
 
     @DrawableRes
     fun getResId(iconId: Int): Int {
-        return ICON_IDS.getOrElse(iconId, { return DEFAULT_RES_ID; })
+        for ((key, value) in ICONS) {
+            if (value == iconId) return key
+        }
+
+        return DEFAULT_RES_ID
     }
 
 }

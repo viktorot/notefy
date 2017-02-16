@@ -2,6 +2,7 @@ package org.viktorot.notefy.notes_list
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -44,7 +45,7 @@ class NoteListController : BaseController(), NotesListView {
     }
 
     private fun initRecyclerView(v: View) {
-        v.note_list_recycler.layoutManager = LinearLayoutManager(v.context)
+        v.note_list_recycler.layoutManager = GridLayoutManager(applicationContext, 2)
 
         adapter = NoteListAdapter({ id -> presenter.onNoteClick(id) })
         v.note_list_recycler.adapter = adapter
@@ -89,8 +90,7 @@ class NoteListController : BaseController(), NotesListView {
 
     override fun navigateToNote(note: NoteModel) {
         val args = Bundle()
-        args.putBoolean(NoteDetailsController.IS_NEW_ARG, false)
-
+        args.putParcelable(NoteDetailsController.NOTE, note)
         router?.pushController(RouterTransaction.with(NoteDetailsController(args)))
     }
 
