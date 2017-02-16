@@ -4,17 +4,21 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bluelinelabs.conductor.RouterTransaction
 import kotlinx.android.synthetic.main.controller_note_list.view.*
+import org.jetbrains.anko.dimen
 import org.viktorot.notefy.R
 import org.viktorot.notefy.base.BaseController
+import org.viktorot.notefy.base.MainActivityCallback
 import org.viktorot.notefy.models.NoteDbModel
 import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.note.NoteDetailsController
 import org.viktorot.notefy.repo.NotesRepository
+import org.viktorot.notefy.view.GridAutofitLayoutManager
 
 class NoteListController : BaseController(), NotesListView {
 
@@ -26,12 +30,24 @@ class NoteListController : BaseController(), NotesListView {
     private lateinit var adapter: NoteListAdapter
     private lateinit var presenter: NoteListPresenter
 
+    lateinit var callback: MainActivityCallback
+
+    private fun attachCallbacks() {
+        try {
+            callback = activity as MainActivityCallback
+        } catch (ex: ClassCastException) {
+            throw ClassCastException("$activity must implement MainActivityCallback")
+        }
+    }
+
     override fun inflateView(inflater: LayoutInflater, parent: ViewGroup): View {
         return inflater.inflate(R.layout.controller_note_list, parent, false)
     }
 
     override fun onViewCreated(view: View) {
         super.onViewCreated(view)
+
+        attachCallbacks()
 
         initRecyclerView(view)
 
@@ -45,7 +61,9 @@ class NoteListController : BaseController(), NotesListView {
     }
 
     private fun initRecyclerView(v: View) {
-        v.note_list_recycler.layoutManager = GridLayoutManager(applicationContext, 2)
+        val itemSize: Int = applicationContext!!.dimen(R.dimen.grid_item_size)
+
+        v.note_list_recycler.layoutManager = GridAutofitLayoutManager(applicationContext, itemSize)
 
         adapter = NoteListAdapter({ id -> presenter.onNoteClick(id) })
         v.note_list_recycler.adapter = adapter
@@ -92,6 +110,8 @@ class NoteListController : BaseController(), NotesListView {
         val args = Bundle()
         args.putParcelable(NoteDetailsController.NOTE, note)
         router?.pushController(RouterTransaction.with(NoteDetailsController(args)))
+
+        callback.showFab(false)
     }
 
 }

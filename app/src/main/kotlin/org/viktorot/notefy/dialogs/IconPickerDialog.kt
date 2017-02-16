@@ -26,7 +26,7 @@ class IconPickerDialog : BottomSheetDialogFragment() {
     lateinit var adapter: IconAdapter
     val GRID_SIZE:Int = 2
 
-    var onIconSelected: (Int) -> Unit = { Log.w(TAG, "click action not set") }
+    var onIconSelected: (Int) -> Unit = { Log.wtf(TAG, "click action not set") }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_icon_list, container, false)
