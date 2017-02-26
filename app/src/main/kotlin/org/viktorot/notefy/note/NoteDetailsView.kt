@@ -9,6 +9,6 @@ interface NoteDetailsView: BaseView {
     fun setPinned(pinned: Boolean)
     fun setIcon(@DrawableRes iconResId: Int)
 
-    fun showSaveSuccess()
+    fun showSaveSuccess(message: String)
     fun showSaveError()
 }

@@ -40,8 +40,6 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
     lateinit var titleSubscription: Disposable
     lateinit var contentSubscription: Disposable
 
-
-
     init {
         setHasOptionsMenu(true)
     }
@@ -158,9 +156,9 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
         this.icon.imageResource = iconResId
     }
 
-    override fun showSaveSuccess() {
+    override fun showSaveSuccess(message: String) {
         val v: View = view ?: return
-        Snackbar.make(v, "[Note saved]", Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(v, message, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun showSaveError() {

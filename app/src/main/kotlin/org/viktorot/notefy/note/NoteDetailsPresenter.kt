@@ -7,6 +7,7 @@ import io.reactivex.schedulers.Schedulers
 import org.viktorot.notefy.base.BasePresenter
 import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.repo.NotesRepository
+import org.viktorot.notefy.utils.NotificationUtils
 
 class NoteDetailsPresenter(private val repo: NotesRepository, private val view: NoteDetailsView): BasePresenter(repo, view) {
 
@@ -44,7 +45,7 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
                 .subscribe(
                         { success ->
                             when (success) {
-                                true -> view.showSaveSuccess()
+                                true -> view.showSaveSuccess("[Note saved]")
                                 false -> view.showSaveError()
                             }
                         },
@@ -61,7 +62,7 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { success ->
-                            view.showSaveSuccess()
+                            view.showSaveSuccess("[Note updated]")
                         },
                         { error ->
                             Log.e(TAG, error.toString())
@@ -86,6 +87,13 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
     fun togglePinned() {
         this.note.pinned = !this.note.pinned
         view.setPinned(this.note.pinned)
+
+        if (this.note.pinned) {
+            NotificationUtils.displayNotification(this.note)
+        }
+        else {
+            NotificationUtils.removeNotification(this.note.id)
+        }
     }
 
     fun onIconUpdate(@DrawableRes iconResId: Int) {
