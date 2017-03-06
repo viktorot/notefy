@@ -53,6 +53,11 @@ class NoteListPresenter(private val repo: NotesRepository, private val view: Not
         }
     }
 
+    fun onPinToggled(note: NoteModel, pinned: Boolean) {
+        Log.w(TAG, "note => ${note.title}, pinned => $pinned")
+    }
+
+
     override fun cleanUp() {
         disposable.dispose()
     }

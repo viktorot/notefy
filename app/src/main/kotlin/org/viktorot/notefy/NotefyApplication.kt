@@ -21,7 +21,6 @@ class NotefyApplication: Application() {
             Stetho.initializeWithDefaults(this)
         }
     }
-
 }
 
 val String.Companion.empty: String

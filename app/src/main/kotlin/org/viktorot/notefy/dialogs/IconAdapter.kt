@@ -1,10 +1,7 @@
 package org.viktorot.notefy.dialogs
 
 import android.content.Context
-import android.support.annotation.DrawableRes
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,19 +9,8 @@ import android.widget.ImageButton
 import org.jetbrains.anko.imageResource
 import org.jetbrains.anko.onClick
 import org.viktorot.notefy.R
-import java.util.ArrayList
 
-class IconAdapter(ctx: Context, items: List<Int>, clickAction: (@DrawableRes Int) -> Unit) : RecyclerView.Adapter<IconAdapter.ViewHolder>() {
-
-    private val items: List<Int>
-    private val ctx: Context
-    private val clickAction: (Int) -> Unit
-
-    init {
-        this.items = items
-        this.ctx = ctx
-        this.clickAction = clickAction
-    }
+class IconAdapter(private val ctx: Context, private val items: List<Int>, private val clickAction: (Int) -> Unit) : RecyclerView.Adapter<IconAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v: View = LayoutInflater.from(parent.context).inflate(R.layout.item_icon, parent, false)

@@ -49,10 +49,10 @@ class NoteListController : BaseController(), NotesListView {
 
         attachCallbacks()
 
-        initRecyclerView(view)
-
         presenter = NoteListPresenter(NotesRepository(view.context), this)
         presenter.getNotes()
+
+        initRecyclerView(view)
     }
 
     override fun onDestroyView(view: View) {
@@ -61,11 +61,10 @@ class NoteListController : BaseController(), NotesListView {
     }
 
     private fun initRecyclerView(v: View) {
-        val itemSize: Int = applicationContext!!.dimen(R.dimen.grid_item_size)
+        //val itemSize: Int = applicationContext!!.dimen(R.dimen.grid_item_size)
+        v.note_list_recycler.layoutManager = LinearLayoutManager(applicationContext)
 
-        v.note_list_recycler.layoutManager = GridAutofitLayoutManager(applicationContext, itemSize)
-
-        adapter = NoteListAdapter({ id -> presenter.onNoteClick(id) })
+        adapter = NoteListAdapter(presenter::onNoteClick, presenter::onPinToggled)
         v.note_list_recycler.adapter = adapter
     }
 
