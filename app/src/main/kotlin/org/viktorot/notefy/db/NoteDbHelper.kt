@@ -74,7 +74,13 @@ class NoteDbHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, NoteDbContract.T
         }
     }
 
-
+    fun setPinned(id: Int, pinned: Boolean): Int {
+        return use {
+            update (NoteDbContract.TABLE_NAME, NoteDbContract.PINNED to if(pinned) 1 else 0)
+                    .where("${NoteDbContract.PRIMARY_KEY} = {id}", "id" to id)
+                    .exec()
+        }
+    }
 
     fun getAll(): List<NoteDbModel> {
         return use {

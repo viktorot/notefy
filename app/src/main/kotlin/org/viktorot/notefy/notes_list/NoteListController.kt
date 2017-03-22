@@ -17,7 +17,7 @@ import org.viktorot.notefy.base.MainActivityCallback
 import org.viktorot.notefy.models.NoteDbModel
 import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.note.NoteDetailsController
-import org.viktorot.notefy.repo.NotesRepository
+import org.viktorot.notefy.repo.NoteRepository
 import org.viktorot.notefy.view.GridAutofitLayoutManager
 
 class NoteListController : BaseController(), NotesListView {
@@ -49,7 +49,7 @@ class NoteListController : BaseController(), NotesListView {
 
         attachCallbacks()
 
-        presenter = NoteListPresenter(NotesRepository(view.context), this)
+        presenter = NoteListPresenter(NoteRepository(view.context), this)
         presenter.getNotes()
 
         initRecyclerView(view)
@@ -61,11 +61,14 @@ class NoteListController : BaseController(), NotesListView {
     }
 
     private fun initRecyclerView(v: View) {
-        //val itemSize: Int = applicationContext!!.dimen(R.dimen.grid_item_size)
         v.note_list_recycler.layoutManager = LinearLayoutManager(applicationContext)
 
         adapter = NoteListAdapter(presenter::onNoteClick, presenter::onPinToggled)
         v.note_list_recycler.adapter = adapter
+    }
+
+    override fun updateNote(note: NoteModel) {
+        adapter.updateItem(note)
     }
 
     override fun showNotes(notes: List<NoteModel>) {

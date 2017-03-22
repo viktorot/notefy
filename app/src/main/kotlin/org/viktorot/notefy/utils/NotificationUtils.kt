@@ -21,6 +21,7 @@ object NotificationUtils {
 
         val builder = NotificationCompat.Builder(ctx)
         builder.setSmallIcon(R.mipmap.ic_launcher)
+        builder.setOngoing(true)
         builder.setContentTitle(note.title)
         if (!note.content.isEmpty()) {
             builder.setContentText(note.content)

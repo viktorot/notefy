@@ -27,6 +27,7 @@
             android:layout_marginLeft="10dp"
             android:singleLine="true"
             android:maxLines="1"
+            android:textSize="26dp"
             android:layout_toRightOf="@id/icon"
             android:hint="[Title]" />
 

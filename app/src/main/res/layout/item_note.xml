@@ -42,13 +42,13 @@
             android:layout_centerVertical="true"
             />
 
-        <ToggleButton
+        <ImageButton
             android:id="@+id/pin"
             android:layout_width="@dimen/item_note_pin_size"
             android:layout_height="@dimen/item_note_pin_size"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:background="@drawable/pin_state_drawable"
+            android:background="@drawable/ic_pin"
             android:textOn="@null"
             android:textOff="@null"
             android:checked="false"

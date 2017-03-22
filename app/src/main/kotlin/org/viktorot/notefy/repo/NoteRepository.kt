@@ -2,14 +2,16 @@ package org.viktorot.notefy.repo
 
 import android.content.Context
 import android.support.annotation.DrawableRes
+import io.reactivex.Completable
 import io.reactivex.Single
 import org.viktorot.notefy.database
+import org.viktorot.notefy.exceptions.PinnedStateUpdateException
 import org.viktorot.notefy.models.NoteDbModel
 import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.timestamp
 import org.viktorot.notefy.utils.NoteIcons
 
-class NotesRepository(val ctx: Context) {
+class NoteRepository(val ctx: Context) {
 
     fun getNotes(): Single<List<NoteModel>> {
         val db = ctx.database
@@ -39,6 +41,17 @@ class NotesRepository(val ctx: Context) {
             val res: Int = db.update(id, title, content, iconId, pinned, ctx.timestamp)
 
             res != -1
+        }
+    }
+
+    fun setPinned(id: Int, pinned: Boolean): Completable {
+        val db = ctx.database
+        return Completable.fromCallable {
+            val res: Int = db.setPinned(id, pinned)
+            when (res != -1) {
+                true -> true
+                false -> throw PinnedStateUpdateException()
+            }
         }
     }
 

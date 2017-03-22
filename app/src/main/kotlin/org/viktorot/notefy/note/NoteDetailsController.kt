@@ -17,7 +17,7 @@ import org.viktorot.notefy.base.BaseController
 import org.viktorot.notefy.base.MainActivityCallback
 import org.viktorot.notefy.dialogs.IconPickerDialog
 import org.viktorot.notefy.models.NoteModel
-import org.viktorot.notefy.repo.NotesRepository
+import org.viktorot.notefy.repo.NoteRepository
 import org.viktorot.notefy.utils.TextViewTextObservable
 
 class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsView {
@@ -75,7 +75,7 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
 
         initToolbar()
 
-        this.presenter = NoteDetailsPresenter(NotesRepository(view.context), this)
+        this.presenter = NoteDetailsPresenter(NoteRepository(view.context), this)
         when (note == null) {
             true -> this.presenter.init()
             false -> this.presenter.init(note as NoteModel)
@@ -156,7 +156,7 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
         if (!this.menuInflated) return
 
         // TODO: compat drawable
-        val pinDrawable: Drawable = pinMenuItem.icon
+        val pinDrawable: Drawable = pinMenuItem.icon.mutate()
         when (pinned) {
             true -> pinDrawable.setTint(ContextCompat.getColor(applicationContext, R.color.colorAccent))
             false -> pinDrawable.setTint(Color.BLACK)
@@ -169,7 +169,7 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
         saveMenuItem.isEnabled = enable
 
         // TODO: compat drawable
-        val saveDrawable: Drawable = saveMenuItem.icon
+        val saveDrawable: Drawable = saveMenuItem.icon.mutate()
         when (enable) {
             true -> saveDrawable.setTint(Color.BLACK)
             false -> saveDrawable.setTint(Color.LTGRAY)

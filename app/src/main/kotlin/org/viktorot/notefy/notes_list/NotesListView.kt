@@ -10,5 +10,6 @@ interface NotesListView: BaseView {
     fun showError()
     fun showNotes(notes: List<NoteModel>)
 
+    fun updateNote(note: NoteModel)
     fun navigateToNote(note: NoteModel)
 }

@@ -6,10 +6,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.viktorot.notefy.base.BasePresenter
 import org.viktorot.notefy.models.NoteModel
-import org.viktorot.notefy.repo.NotesRepository
+import org.viktorot.notefy.repo.NoteRepository
 import org.viktorot.notefy.utils.NotificationUtils
 
-class NoteDetailsPresenter(private val repo: NotesRepository, private val view: NoteDetailsView): BasePresenter(repo, view) {
+class NoteDetailsPresenter(private val repo: NoteRepository, private val view: NoteDetailsView) : BasePresenter(repo, view) {
 
     companion object {
         @JvmStatic val TAG: String = NoteDetailsPresenter::class.java.simpleName
@@ -43,7 +43,10 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
                 .subscribe(
                         { success ->
                             when (success) {
-                                true -> view.showSaveSuccess("[Note saved]")
+                                true -> {
+                                    view.showSaveSuccess("[Note saved]")
+                                    updateNotification()
+                                }
                                 false -> view.showSaveError()
                             }
                         },
@@ -60,7 +63,10 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { success ->
-                            view.showSaveSuccess("[Note updated]")
+                            run {
+                                view.showSaveSuccess("[Note updated]")
+                                updateNotification()
+                            }
                         },
                         { error ->
                             Log.e(TAG, error.toString())
@@ -99,13 +105,19 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
         view.setIcon(this.note.icon)
     }
 
+    private fun updateNotification() {
+        when (note.pinned) {
+            true -> NotificationUtils.displayNotification(note)
+            false -> NotificationUtils.removeNotification(note.id)
+        }
+    }
+
     private fun isNoteValid(): Boolean {
         return !this.note.title.isEmpty() && !this.note.content.isEmpty()
     }
 
 
-
-    fun printModel () {
+    fun printModel() {
         Log.d(TAG, this.note.toString())
     }
 

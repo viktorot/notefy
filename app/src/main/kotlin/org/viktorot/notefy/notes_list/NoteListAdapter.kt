@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ToggleButton
@@ -29,6 +30,15 @@ class NoteListAdapter(val itemClickCallback: (id: Int) -> Unit, val pinnedToggle
         notifyDataSetChanged()
     }
 
+    fun updateItem(note: NoteModel) {
+        val index: Int = items.indexOf(note)
+        if (index != -1) {
+            // TODO: payload
+            items[index] = note
+            notifyItemChanged(index)
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         val inflatedView = LayoutInflater.from(parent.context).inflate(R.layout.item_note, parent, false)
         val itemView = NoteViewHolder(inflatedView)
@@ -43,9 +53,10 @@ class NoteListAdapter(val itemClickCallback: (id: Int) -> Unit, val pinnedToggle
         holder.timestamp.text = note.timestamp.toString()
 
         holder.setPinnedColor(note.pinned)
-        holder.pin.setOnCheckedChangeListener { buttonView, isChecked ->
-            pinnedToggleCallback(note, isChecked)
-            holder.setPinnedColor(isChecked)
+        holder.pin.onClick {
+            val newState = !note.pinned
+            pinnedToggleCallback(note, newState)
+            holder.setPinnedColor(newState)
         }
 
         holder.rootView.onClick { itemClickCallback(note.id) }
@@ -56,30 +67,28 @@ class NoteListAdapter(val itemClickCallback: (id: Int) -> Unit, val pinnedToggle
     }
 }
 
-class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class NoteViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     val rootView: View = itemView.findViewById(R.id.root_view)
     val icon: ImageView = itemView.findViewById(R.id.icon) as ImageView
     val title: TextView = itemView.findViewById(R.id.title) as TextView
     val timestamp: TextView = itemView.findViewById(R.id.timestamp) as TextView
-    val pin: ToggleButton = itemView.findViewById(R.id.pin) as ToggleButton
+    val pin: ImageButton = itemView.findViewById(R.id.pin) as ImageButton
 
     fun setPinnedColor(pinned: Boolean) {
-        val drawable = pin.backgroundDrawable
+        val drawable = pin.backgroundDrawable ?: return
+        val mutableDrawable = drawable.mutate()
+
         when(pinned) {
             true -> {
-                pin.isChecked = true
-
                 val color = ContextCompat.getColor(itemView.context, R.color.colorAccent)
-                drawable?.run {
-                    DrawableCompat.setTint(drawable, color)
+                mutableDrawable.run {
+                    DrawableCompat.setTint(mutableDrawable, color)
                     pin.backgroundDrawable = drawable
                 }
             }
             false -> {
-                pin.isChecked = false
-
-                drawable?.run {
-                    DrawableCompat.setTint(drawable, Color.BLACK)
+                mutableDrawable.run {
+                    DrawableCompat.setTint(mutableDrawable, Color.BLACK)
                     pin.backgroundDrawable = drawable
                 }
             }
