@@ -20,9 +20,9 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
 
     fun init(note: NoteModel = NoteModel.empty) {
         this.note = note
-        isNew = (this.note == NoteModel.empty)
+        this.isNew = (this.note == NoteModel.empty)
 
-        if (!isNew) {
+        if (!this.isNew) {
             view.setIcon(this.note.icon)
             view.setTitle(this.note.title)
             view.setContent(this.note.content)
@@ -30,11 +30,9 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
     }
 
     fun saveChanges() {
-        if (isNew) {
-            saveNote()
-        }
-        else {
-            updateNote()
+        when (this.isNew) {
+            true -> saveNote()
+            false -> updateNote()
         }
     }
 
@@ -74,26 +72,26 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
 
     fun onTitleUpdate(newValue: String) {
         this.note.title = newValue
+        updateCanSaveState()
     }
 
     fun onContentUpdate(newValue: String) {
         this.note.content = newValue
+        updateCanSaveState()
     }
 
-    fun updatePinnedState() {
+    fun updateMenuState() {
         view.setPinned(this.note.pinned)
+        updateCanSaveState()
+    }
+
+    private fun updateCanSaveState() {
+        view.enableSaving(isNoteValid())
     }
 
     fun togglePinned() {
         this.note.pinned = !this.note.pinned
         view.setPinned(this.note.pinned)
-
-        if (this.note.pinned) {
-            NotificationUtils.displayNotification(this.note)
-        }
-        else {
-            NotificationUtils.removeNotification(this.note.id)
-        }
     }
 
     fun onIconUpdate(@DrawableRes iconResId: Int) {
@@ -101,6 +99,9 @@ class NoteDetailsPresenter(private val repo: NotesRepository, private val view: 
         view.setIcon(this.note.icon)
     }
 
+    private fun isNoteValid(): Boolean {
+        return !this.note.title.isEmpty() && !this.note.content.isEmpty()
+    }
 
 
 

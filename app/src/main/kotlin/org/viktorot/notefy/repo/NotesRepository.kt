@@ -13,6 +13,7 @@ class NotesRepository(val ctx: Context) {
 
     fun getNotes(): Single<List<NoteModel>> {
         val db = ctx.database
+        // TODO: completable
         return Single.fromCallable {
             db.getAll().map { dbModel: NoteDbModel ->
                 @DrawableRes val iconResId: Int = NoteIcons.getResId(dbModel.image)

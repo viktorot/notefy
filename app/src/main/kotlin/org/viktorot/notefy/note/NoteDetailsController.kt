@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
 import android.view.*
 import android.widget.ImageButton
 import android.widget.TextView
@@ -36,9 +37,12 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
     lateinit var presenter: NoteDetailsPresenter
 
     lateinit var pinMenuItem: MenuItem
+    lateinit var saveMenuItem: MenuItem
 
     lateinit var titleSubscription: Disposable
     lateinit var contentSubscription: Disposable
+
+    var menuInflated: Boolean = false
 
     init {
         setHasOptionsMenu(true)
@@ -106,7 +110,11 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
         super.onPrepareOptionsMenu(menu)
 
         pinMenuItem = menu.getItem(0)
-        presenter.updatePinnedState()
+        saveMenuItem = menu.getItem(1)
+
+        menuInflated = true
+
+        presenter.updateMenuState()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -145,10 +153,26 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
     }
 
     override fun setPinned(pinned: Boolean) {
+        if (!this.menuInflated) return
+
+        // TODO: compat drawable
         val pinDrawable: Drawable = pinMenuItem.icon
         when (pinned) {
-            true -> pinDrawable.setTint(Color.RED)
+            true -> pinDrawable.setTint(ContextCompat.getColor(applicationContext, R.color.colorAccent))
             false -> pinDrawable.setTint(Color.BLACK)
+        }
+    }
+
+    override fun enableSaving(enable: Boolean) {
+        if (!this.menuInflated) return
+
+        saveMenuItem.isEnabled = enable
+
+        // TODO: compat drawable
+        val saveDrawable: Drawable = saveMenuItem.icon
+        when (enable) {
+            true -> saveDrawable.setTint(Color.BLACK)
+            false -> saveDrawable.setTint(Color.LTGRAY)
         }
     }
 
