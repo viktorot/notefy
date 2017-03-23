@@ -41,14 +41,12 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { success ->
-                            when (success) {
-                                true -> {
-                                    view.showSaveSuccess("[Note saved]")
-                                    updateNotification()
-                                }
-                                false -> view.showSaveError()
-                            }
+                        { id: Int ->
+                            note.id = id
+                            isNew = false
+
+                            view.showSaveSuccess("[Note saved]")
+                            updateNotification()
                         },
                         { error ->
                             Log.e(TAG, error.toString())
@@ -62,11 +60,9 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { success ->
-                            run {
-                                view.showSaveSuccess("[Note updated]")
-                                updateNotification()
-                            }
+                        {
+                            view.showSaveSuccess("[Note updated]")
+                            updateNotification()
                         },
                         { error ->
                             Log.e(TAG, error.toString())
@@ -106,14 +102,11 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
     }
 
     private fun updateNotification() {
-        when (note.pinned) {
-            true -> NotificationUtils.displayNotification(note)
-            false -> NotificationUtils.removeNotification(note.id)
-        }
+        NotificationUtils.notify(note)
     }
 
     private fun isNoteValid(): Boolean {
-        return !this.note.title.isEmpty() && !this.note.content.isEmpty()
+        return !this.note.title.isEmpty()
     }
 
 

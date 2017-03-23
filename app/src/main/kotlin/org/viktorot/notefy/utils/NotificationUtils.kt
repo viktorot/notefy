@@ -13,7 +13,14 @@ import org.viktorot.notefy.view.DeletePopupActivity
 
 object NotificationUtils {
 
-    fun displayNotification(note: NoteModel) {
+    fun notify(note: NoteModel) {
+        when (note.pinned) {
+            true -> displayNotification(note)
+            false -> removeNotification(note.id)
+        }
+    }
+
+    private fun displayNotification(note: NoteModel) {
         val ctx = NotefyApplication.ctx
 
         val resultIntent = Intent(ctx, DeletePopupActivity::class.java)
@@ -32,7 +39,7 @@ object NotificationUtils {
                 .notify(note.id, builder.build())
     }
 
-    fun removeNotification(id: Int) {
+    private fun removeNotification(id: Int) {
         val ctx = NotefyApplication.ctx
 
         NotificationManagerCompat.from(ctx)

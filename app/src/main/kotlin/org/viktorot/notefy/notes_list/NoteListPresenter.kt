@@ -18,7 +18,7 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
 
     lateinit private var notesDisposable: Disposable
     lateinit private var pinnedUpdateDisposable: Disposable
-    lateinit private var notes: List<NoteModel>
+    lateinit private var notes: MutableList<NoteModel>
 
     fun getNotes() {
         view.showLoadingView()
@@ -28,7 +28,7 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { notes ->
-                            this.notes = notes
+                            this.notes = notes.toMutableList()
 
                             if (!notes.isEmpty()) {
                                 view.showNotes(notes)
@@ -54,19 +54,21 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
     }
 
     fun onPinToggled(note: NoteModel, newState: Boolean) {
-        note.pinned = newState
+        val index: Int = notes.indexOf(note)
+        if (index == -1) {
+            return
+        }
 
         pinnedUpdateDisposable = repo.setPinned(note.id, note.pinned)
                 .subscribe(
                         {
                             Log.d(TAG, "note => ${note.title}, pinned => ${note.pinned}")
 
-                            view.updateNote(note)
+                            note.pinned = newState
+                            notes[index] = note
 
-                            when (note.pinned) {
-                                true -> NotificationUtils.displayNotification(note)
-                                false -> NotificationUtils.removeNotification(note.id)
-                            }
+                            view.updateNote(note)
+                            NotificationUtils.notify(note)
                         },
                         { error ->
                             Log.e(TAG, "error updating pinned state => $error")

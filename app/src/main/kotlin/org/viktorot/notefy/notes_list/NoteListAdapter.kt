@@ -56,7 +56,6 @@ class NoteListAdapter(val itemClickCallback: (id: Int) -> Unit, val pinnedToggle
         holder.pin.onClick {
             val newState = !note.pinned
             pinnedToggleCallback(note, newState)
-            holder.setPinnedColor(newState)
         }
 
         holder.rootView.onClick { itemClickCallback(note.id) }
