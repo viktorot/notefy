@@ -18,6 +18,10 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
     var isNew: Boolean = true
     lateinit var note: NoteModel
 
+    /*
+        PUBLIC INTERFACE
+    */
+
     fun init(note: NoteModel = NoteModel.empty) {
         this.note = note
         this.isNew = (this.note == NoteModel.empty)
@@ -35,6 +39,34 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
             false -> updateNote()
         }
     }
+
+    fun updateMenuState() {
+        view.setPinned(note.pinned)
+        updateCanSaveState()
+    }
+
+    fun onTitleUpdate(newValue: String) {
+        this.note.title = newValue
+        updateCanSaveState()
+    }
+
+    fun onContentUpdate(newValue: String) {
+        this.note.content = newValue
+        updateCanSaveState()
+    }
+
+    fun onIconUpdate(@DrawableRes iconResId: Int) {
+        this.note.icon = iconResId
+        view.setIcon(this.note.icon)
+    }
+
+    fun onPinnedStateToggled() {
+        togglePinned()
+        if (!isNew) savePinnedStateUpdate(note.pinned)
+    }
+
+
+
 
     private fun saveNote() {
         repo.saveNote(this.note.title, this.note.content, this.note.icon, this.note.pinned)
@@ -71,35 +103,30 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
                 )
     }
 
-
-    fun onTitleUpdate(newValue: String) {
-        this.note.title = newValue
-        updateCanSaveState()
-    }
-
-    fun onContentUpdate(newValue: String) {
-        this.note.content = newValue
-        updateCanSaveState()
-    }
-
-    fun updateMenuState() {
-        view.setPinned(this.note.pinned)
-        updateCanSaveState()
+    private fun savePinnedStateUpdate(newState: Boolean) {
+        repo.setPinned(note.id, newState)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        {
+                            Log.d(TAG, "pinned state updated. new state => $note.pinned")
+                            updateNotification()
+                        },
+                        { error ->
+                            Log.e(TAG, "set pinned error => $error")
+                            view.showSaveError()
+                        })
     }
 
     private fun updateCanSaveState() {
         view.enableSaving(isNoteValid())
     }
 
-    fun togglePinned() {
-        this.note.pinned = !this.note.pinned
+    private fun togglePinned() {
+        note.pinned = !note.pinned
         view.setPinned(this.note.pinned)
     }
 
-    fun onIconUpdate(@DrawableRes iconResId: Int) {
-        this.note.icon = iconResId
-        view.setIcon(this.note.icon)
-    }
 
     private fun updateNotification() {
         NotificationUtils.notify(note)
@@ -109,13 +136,6 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
         return !this.note.title.isEmpty()
     }
 
-
-    fun printModel() {
-        Log.d(TAG, this.note.toString())
-    }
-
     override fun cleanUp() {
     }
-
-
 }

@@ -120,7 +120,7 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_pin_note -> {
-                presenter.togglePinned()
+                presenter.onPinnedStateToggled()
             }
             R.id.action_save_note -> {
                 presenter.saveChanges()
