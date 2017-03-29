@@ -16,8 +16,8 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
         val TAG: String = NoteListPresenter::class.java.simpleName
     }
 
+    private var pinnedUpdateDisposable: Disposable? = null
     lateinit private var notesDisposable: Disposable
-    lateinit private var pinnedUpdateDisposable: Disposable
     lateinit private var notes: MutableList<NoteModel>
 
     fun getNotes() {
@@ -48,8 +48,9 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
 
         if (note != null) {
             view.navigateToNote(note)
-        } else {
-            Log.w(TAG, "note id => $id not found. should not happen")
+        }
+        else {
+            Log.w(TAG, "note id => $id not found. this should not happen")
         }
     }
 
@@ -59,13 +60,13 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
             return
         }
 
-        pinnedUpdateDisposable = repo.setPinned(note.id, note.pinned)
+        pinnedUpdateDisposable = repo.setPinned(note.id, newState)
                 .subscribe(
                         {
-                            Log.d(TAG, "note => ${note.title}, pinned => ${note.pinned}")
-
                             note.pinned = newState
                             notes[index] = note
+
+                            Log.d(TAG, "note => ${note.id}, pinned => ${note.pinned}")
 
                             view.updateNote(note)
                             NotificationUtils.notify(note)
@@ -78,9 +79,7 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
 
     override fun cleanUp() {
         notesDisposable.dispose()
-
-        // TODO:
-        //pinnedUpdateDisposable.dispose()
+        pinnedUpdateDisposable?.dispose()
     }
 
 }

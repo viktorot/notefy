@@ -35,7 +35,8 @@ class NoteListController : BaseController(), NotesListView {
     private fun attachCallbacks() {
         try {
             callback = activity as MainActivityCallback
-        } catch (ex: ClassCastException) {
+        }
+        catch (ex: ClassCastException) {
             throw ClassCastException("$activity must implement MainActivityCallback")
         }
     }

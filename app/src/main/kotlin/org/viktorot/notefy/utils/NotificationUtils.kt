@@ -27,7 +27,7 @@ object NotificationUtils {
         val pendingIntent = PendingIntent.getActivity(ctx, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val builder = NotificationCompat.Builder(ctx)
-        builder.setSmallIcon(R.mipmap.ic_launcher)
+        builder.setSmallIcon(note.icon)
         builder.setOngoing(true)
         builder.setContentTitle(note.title)
         if (!note.content.isEmpty()) {
