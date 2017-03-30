@@ -9,4 +9,9 @@
 
     <string name="delete_notification_title">Notification title</string>
     <string name="delete_notification_content">Do you wish to edit/delete this notification?</string>
+
+    <string name="note_new_title">New note</string>
+    <string name="note_edit_title">Edit note</string>
+    <string name="note_title_hint">Title</string>
+    <string name="note_content_hint">Content</string>
 </resources>

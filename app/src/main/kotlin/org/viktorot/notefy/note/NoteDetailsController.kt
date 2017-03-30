@@ -37,7 +37,6 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
     lateinit var presenter: NoteDetailsPresenter
 
     lateinit var pinMenuItem: MenuItem
-    lateinit var saveMenuItem: MenuItem
 
     lateinit var titleSubscription: Disposable
     lateinit var contentSubscription: Disposable
@@ -51,7 +50,8 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
     private fun attachCallbacks() {
         try {
             callback = activity as MainActivityCallback
-        } catch (ex: ClassCastException) {
+        }
+        catch (ex: ClassCastException) {
             throw ClassCastException("$activity must implement MainActivityCallback")
         }
     }
@@ -110,7 +110,6 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
         super.onPrepareOptionsMenu(menu)
 
         pinMenuItem = menu.getItem(0)
-        saveMenuItem = menu.getItem(1)
 
         menuInflated = true
 
@@ -122,17 +121,15 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
             R.id.action_pin_note -> {
                 presenter.onPinnedStateToggled()
             }
-            R.id.action_save_note -> {
-                presenter.saveChanges()
-            }
             else -> return false
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun initToolbar() {
-        this.actionBar?.title = "[New note]"
+        this.actionBar?.title = applicationContext!!.getString(R.string.note_new_title)
         callback.showBackArrow(true)
+        callback.setBackIcon(R.drawable.ic_close_vector)
     }
 
     private fun showIconPopup() {
@@ -163,16 +160,13 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
         }
     }
 
-    override fun enableSaving(enable: Boolean) {
+    override fun showSaveIcon(show: Boolean) {
         if (!this.menuInflated) return
 
-        saveMenuItem.isEnabled = enable
-
         // TODO: compat drawable
-        val saveDrawable: Drawable = saveMenuItem.icon.mutate()
-        when (enable) {
-            true -> saveDrawable.setTint(Color.BLACK)
-            false -> saveDrawable.setTint(Color.LTGRAY)
+        when (show) {
+            true -> callback.setBackIcon(R.drawable.ic_check_vector_highlight)
+            false -> callback.setBackIcon(R.drawable.ic_close_vector)
         }
     }
 

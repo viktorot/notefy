@@ -119,7 +119,7 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
     }
 
     private fun updateCanSaveState() {
-        view.enableSaving(isNoteValid())
+        view.showSaveIcon(isNoteValid())
     }
 
     private fun togglePinned() {

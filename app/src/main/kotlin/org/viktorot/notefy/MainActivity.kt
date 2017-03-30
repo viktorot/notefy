@@ -1,8 +1,10 @@
 package org.viktorot.notefy
 
 import android.os.Bundle
+import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
@@ -49,7 +51,6 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
     private fun initToolbar() {
         showBackArrow(false)
         toolbar.setNavigationOnClickListener {
-            // TODO: check controller count?
             router.popCurrentController()
         }
     }
@@ -76,6 +77,10 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
             true -> toolbar.navigationIcon = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back)
             false -> toolbar.navigationIcon = null
         }
+    }
+
+    override fun setBackIcon(@DrawableRes iconResId: Int) {
+        toolbar.navigationIcon = ContextCompat.getDrawable(this, iconResId)
     }
 
     override fun resetTitle() {

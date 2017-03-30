@@ -7,8 +7,8 @@ interface NoteDetailsView: BaseView {
     fun setTitle(title: String)
     fun setContent(title: String)
     fun setPinned(pinned: Boolean)
-    fun enableSaving(enable: Boolean)
     fun setIcon(@DrawableRes iconResId: Int)
+    fun showSaveIcon(show: Boolean)
 
     fun showSaveSuccess(message: String)
     fun showSaveError()
