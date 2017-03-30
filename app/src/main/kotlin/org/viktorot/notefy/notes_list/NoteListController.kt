@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bluelinelabs.conductor.RouterTransaction
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.controller_note_list.view.*
 import org.jetbrains.anko.dimen
 import org.viktorot.notefy.R
@@ -58,6 +60,7 @@ class NoteListController : BaseController(), NotesListView {
 
     override fun onDestroyView(view: View) {
         presenter.cleanUp()
+
         super.onDestroyView(view)
     }
 

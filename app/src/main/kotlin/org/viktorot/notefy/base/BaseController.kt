@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import butterknife.ButterKnife
 import butterknife.Unbinder
 import com.bluelinelabs.conductor.Controller
+import org.viktorot.notefy.NotefyApplication
 
 abstract class BaseController: Controller {
 
@@ -62,6 +63,8 @@ abstract class BaseController: Controller {
             }
         }
 
+    val notefyApp: NotefyApplication
+        get() = applicationContext as NotefyApplication
 
     val actionBar: ActionBar?
         get() = appCompatActivity!!.supportActionBar

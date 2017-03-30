@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.*
 import android.widget.ImageButton
 import android.widget.TextView
@@ -17,6 +18,7 @@ import org.viktorot.notefy.base.BaseController
 import org.viktorot.notefy.base.MainActivityCallback
 import org.viktorot.notefy.dialogs.IconPickerDialog
 import org.viktorot.notefy.models.NoteModel
+import org.viktorot.notefy.notes_list.NoteListController
 import org.viktorot.notefy.repo.NoteRepository
 import org.viktorot.notefy.utils.TextViewTextObservable
 
@@ -40,6 +42,8 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
 
     lateinit var titleSubscription: Disposable
     lateinit var contentSubscription: Disposable
+
+    private lateinit var disposable: Disposable
 
     var menuInflated: Boolean = false
 
@@ -87,7 +91,16 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
         this.contentSubscription = TextViewTextObservable(view.content)
                 .subscribe { value: CharSequence -> this.presenter.onContentUpdate(value.toString()) }
 
-        this.icon.onClick { showIconPopup() }
+        this.icon.onClick {
+            //showIconPopup()
+            notefyApp.relay.accept(true)
+        }
+
+        disposable = notefyApp.relayObservable
+                .doOnNext { change ->
+                    Log.d(TAG, "onNext => $change")
+                }
+                .subscribe()
     }
 
     override fun onDestroyView(view: View) {
@@ -97,6 +110,8 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
 
         titleSubscription.dispose()
         contentSubscription.dispose()
+
+        disposable.dispose()
 
         super.onDestroyView(view)
     }
