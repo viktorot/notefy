@@ -1,28 +1,18 @@
 package org.viktorot.notefy.notes_list
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bluelinelabs.conductor.RouterTransaction
-import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.controller_note_list.view.*
-import org.jetbrains.anko.dimen
 import org.viktorot.notefy.R
 import org.viktorot.notefy.base.BaseController
 import org.viktorot.notefy.base.MainActivityCallback
-import org.viktorot.notefy.models.NoteDbModel
 import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.note.NoteDetailsController
-import org.viktorot.notefy.repo.NoteRepository
 import org.viktorot.notefy.repository
-import org.viktorot.notefy.view.GridAutofitLayoutManager
-import timber.log.Timber
 
 class NoteListController : BaseController(), NotesListView {
 
@@ -49,27 +39,15 @@ class NoteListController : BaseController(), NotesListView {
 
     override fun onViewCreated(view: View) {
         super.onViewCreated(view)
-        Timber.w("onViewCreated")
-
         attachCallbacks()
 
         presenter.init()
+        presenter.getNotes()
 
         initRecyclerView(view)
     }
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-        Timber.w("onAttach")
-    }
-
-    override fun onDetach(view: View) {
-        Timber.w("onDetach")
-        super.onDetach(view)
-    }
-
     override fun onDestroyView(view: View) {
-        Timber.w("onDestroyView")
         presenter.cleanUp()
 
         super.onDestroyView(view)
@@ -87,8 +65,6 @@ class NoteListController : BaseController(), NotesListView {
     }
 
     override fun showNotes(notes: List<NoteModel>) {
-        Timber.w("showNotes")
-
         val v: View = view ?: return
 
         v.error_view.visibility = View.GONE

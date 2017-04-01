@@ -1,11 +1,7 @@
 package org.viktorot.notefy.notes_list
 
-import android.util.Log
-import io.reactivex.CompletableObserver
-import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import org.viktorot.notefy.base.BasePresenter
 import org.viktorot.notefy.models.NoteModel
@@ -15,12 +11,7 @@ import timber.log.Timber
 
 class NoteListPresenter(private val repo: NoteRepository, private val view: NotesListView) : BasePresenter(repo, view) {
 
-    companion object {
-        @JvmStatic
-        val TAG: String = NoteListPresenter::class.java.simpleName
-    }
-
-    lateinit private var notes: MutableList<NoteModel>
+    private var notes: MutableList<NoteModel> = emptyList<NoteModel>().toMutableList()
 
     private var pinnedUpdateDisposable: Disposable? = null
     private var notesDisposable: Disposable? = null
@@ -33,7 +24,7 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
                 .subscribe(
                         { changed ->
                             Timber.w("noted changed => $changed")
-                            if (changed) getNotes()
+                            if (changed) updateNotes()
                         },
                         { error ->
                             Timber.e("notes changed => $error")
@@ -44,26 +35,17 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
     fun getNotes() {
         view.showLoadingView()
 
+        if (!notes.isEmpty()) {
+            retrieveNotes()
+        }
+        else {
+            view.showNotes(notes)
+        }
+    }
+
+    private fun updateNotes() {
         notesDisposable?.dispose()
-
-        notesDisposable = repo.getNotes()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { notes ->
-                            this.notes = notes.toMutableList()
-
-                            if (!notes.isEmpty()) {
-                                view.showNotes(notes)
-                            } else {
-                                view.showEmptyView()
-                            }
-                        },
-                        { error ->
-                            Log.d(TAG, error.toString())
-                            view.showError()
-                        }
-                )
+        retrieveNotes()
     }
 
     fun onNoteClick(id: Int): Unit {
@@ -72,7 +54,7 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
         if (note != null) {
             view.navigateToNote(note)
         } else {
-            Log.w(TAG, "note id => $id not found. this should not happen")
+            Timber.w("note id => $id not found. this should not happen")
         }
     }
 
@@ -88,16 +70,37 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
                             note.pinned = newState
                             notes[index] = note
 
-                            Log.d(TAG, "note => ${note.id}, pinned => ${note.pinned}")
+                            Timber.d("note => ${note.id}, pinned => ${note.pinned}")
 
                             view.updateNote(note)
                             NotificationUtils.notify(note)
                         },
                         { error ->
-                            Log.e(TAG, "error updating pinned state => $error")
+                            Timber.e("error updating pinned state => $error")
                         })
     }
 
+    private fun retrieveNotes() {
+        notesDisposable = repo.getNotes()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { notes ->
+                            this.notes = notes.toMutableList()
+
+                            if (!notes.isEmpty()) {
+                                view.showNotes(notes)
+                            }
+                            else {
+                                view.showEmptyView()
+                            }
+                        },
+                        { error ->
+                            Timber.w("error getting notes => $error")
+                            view.showError()
+                        }
+                )
+    }
 
     override fun cleanUp() {
         notesDisposable?.dispose()

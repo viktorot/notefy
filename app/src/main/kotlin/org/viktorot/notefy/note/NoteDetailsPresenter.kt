@@ -1,7 +1,6 @@
 package org.viktorot.notefy.note
 
 import android.support.annotation.DrawableRes
-import android.util.Log
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.viktorot.notefy.base.BasePresenter
@@ -61,8 +60,6 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
         togglePinned()
         if (!isNew) savePinnedStateUpdate(note.pinned)
     }
-
-
 
 
     private fun saveNote() {

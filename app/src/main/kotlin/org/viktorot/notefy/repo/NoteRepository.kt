@@ -58,44 +58,45 @@ class NoteRepository(val ctx: Context) {
             val iconId: Int = NoteIcons.getId(iconResId)
             val res: Int = db.add(title, content, iconId, pinned, ctx.timestamp).toInt()
 
-                    when (res > -1) {
-                        true -> {
-                            notesChangedRelay.accept(true)
-                            res
-                }
+            when (res > -1) {
+                true -> res
                 false -> throw NoteSaveException()
             }
+        }.map { id ->
+            notesChangedRelay.accept(true)
+            id
         }
+
     }
 
-    fun updateNote(id: Int, title: String, content: String, @DrawableRes iconResId: Int, pinned: Boolean): Completable {
+    fun updateNote(id: Int, title: String, content: String, @DrawableRes iconResId: Int, pinned: Boolean): Single<Boolean> {
         val db = ctx.database
-        return Completable.fromCallable {
+        return Single.fromCallable {
             val iconId: Int = NoteIcons.getId(iconResId)
             val res: Int = db.update(id, title, content, iconId, pinned, ctx.timestamp)
 
             when (res > -1) {
-                true -> {
-                    notesChangedRelay.accept(true)
-                    true
-                }
+                true -> true
                 false -> throw NoteUpdateException()
             }
+        }.map { success ->
+            notesChangedRelay.accept(success)
+            success
         }
     }
 
-    fun setPinned(id: Int, pinned: Boolean): Completable {
+    fun setPinned(id: Int, pinned: Boolean): Single<Boolean> {
         val db = ctx.database
-        return Completable.fromCallable {
+        return Single.fromCallable {
             val res: Int = db.setPinned(id, pinned)
 
             when (res > -1) {
-                true -> {
-                    //notesChangedRelay.accept(true)
-                    true
-                }
+                true -> true
                 false -> throw PinnedStateUpdateException()
             }
+        }.map { success ->
+            notesChangedRelay.accept(success)
+            success
         }
     }
 
