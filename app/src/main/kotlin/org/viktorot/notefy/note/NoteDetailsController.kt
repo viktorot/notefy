@@ -20,7 +20,9 @@ import org.viktorot.notefy.dialogs.IconPickerDialog
 import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.notes_list.NoteListController
 import org.viktorot.notefy.repo.NoteRepository
+import org.viktorot.notefy.repository
 import org.viktorot.notefy.utils.TextViewTextObservable
+import timber.log.Timber
 
 class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsView {
 
@@ -42,8 +44,6 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
 
     lateinit var titleSubscription: Disposable
     lateinit var contentSubscription: Disposable
-
-    private lateinit var disposable: Disposable
 
     var menuInflated: Boolean = false
 
@@ -79,7 +79,7 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
 
         initToolbar()
 
-        this.presenter = NoteDetailsPresenter(NoteRepository(view.context), this)
+        this.presenter = NoteDetailsPresenter(applicationContext!!.repository, this)
         when (note == null) {
             true -> this.presenter.init()
             false -> this.presenter.init(note as NoteModel)
@@ -92,26 +92,19 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
                 .subscribe { value: CharSequence -> this.presenter.onContentUpdate(value.toString()) }
 
         this.icon.onClick {
-            //showIconPopup()
-            notefyApp.relay.accept(true)
+            showIconPopup()
         }
-
-        disposable = notefyApp.relayObservable
-                .doOnNext { change ->
-                    Log.d(TAG, "onNext => $change")
-                }
-                .subscribe()
     }
 
     override fun onDestroyView(view: View) {
+        presenter.saveChanges()
+
         callback.showFab(true)
         callback.showBackArrow(false)
         callback.resetTitle()
 
         titleSubscription.dispose()
         contentSubscription.dispose()
-
-        disposable.dispose()
 
         super.onDestroyView(view)
     }
@@ -190,12 +183,12 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
     }
 
     override fun showSaveSuccess(message: String) {
-        val v: View = view ?: return
+        val v: View = activity!!.findViewById(android.R.id.content)
         Snackbar.make(v, message, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun showSaveError() {
-        val v: View = view ?: return
+        val v: View = activity!!.findViewById(android.R.id.content)
         Snackbar.make(v, "[Error saving note]", Snackbar.LENGTH_SHORT).show()
     }
 }

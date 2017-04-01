@@ -1,8 +1,11 @@
 package org.viktorot.notefy.repo
 
 import android.content.Context
+import android.os.SystemClock
 import android.support.annotation.DrawableRes
+import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.Single
 import org.viktorot.notefy.database
 import org.viktorot.notefy.exceptions.NoteSaveException
@@ -12,11 +15,35 @@ import org.viktorot.notefy.models.NoteDbModel
 import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.timestamp
 import org.viktorot.notefy.utils.NoteIcons
+import timber.log.Timber
 
 class NoteRepository(val ctx: Context) {
 
+    companion object {
+        @JvmStatic
+        private var _instance: NoteRepository? = null
+
+        @JvmStatic
+        fun instance(ctx: Context): NoteRepository {
+            if (_instance == null) {
+                _instance = NoteRepository(ctx)
+            }
+            return _instance as NoteRepository
+        }
+    }
+
+    private val notesChangedRelay: BehaviorRelay<Boolean> = BehaviorRelay.createDefault(true)
+    fun getNotesChangedObservable(): Observable<Boolean> {
+        return notesChangedRelay.doOnNext { changed ->
+            Timber.w("new changes state => $changed")
+        }
+    }
+
+
     fun getNotes(): Single<List<NoteModel>> {
         val db = ctx.database
+        notesChangedRelay.accept(false)
+
         return Single.fromCallable {
             db.getAll().map { dbModel: NoteDbModel ->
                 @DrawableRes val iconResId: Int = NoteIcons.getResId(dbModel.image)
@@ -31,8 +58,11 @@ class NoteRepository(val ctx: Context) {
             val iconId: Int = NoteIcons.getId(iconResId)
             val res: Int = db.add(title, content, iconId, pinned, ctx.timestamp).toInt()
 
-            when (res > -1) {
-                true -> res
+                    when (res > -1) {
+                        true -> {
+                            notesChangedRelay.accept(true)
+                            res
+                }
                 false -> throw NoteSaveException()
             }
         }
@@ -45,7 +75,10 @@ class NoteRepository(val ctx: Context) {
             val res: Int = db.update(id, title, content, iconId, pinned, ctx.timestamp)
 
             when (res > -1) {
-                true -> true
+                true -> {
+                    notesChangedRelay.accept(true)
+                    true
+                }
                 false -> throw NoteUpdateException()
             }
         }
@@ -57,7 +90,10 @@ class NoteRepository(val ctx: Context) {
             val res: Int = db.setPinned(id, pinned)
 
             when (res > -1) {
-                true -> true
+                true -> {
+                    //notesChangedRelay.accept(true)
+                    true
+                }
                 false -> throw PinnedStateUpdateException()
             }
         }

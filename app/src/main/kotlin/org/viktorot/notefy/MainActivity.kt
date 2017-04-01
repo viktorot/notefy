@@ -14,13 +14,9 @@ import org.jetbrains.anko.onClick
 import org.viktorot.notefy.base.MainActivityCallback
 import org.viktorot.notefy.notes_list.NoteListController
 import org.viktorot.notefy.note.NoteDetailsController
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), MainActivityCallback {
-
-    companion object {
-        @JvmStatic
-        val TAG: String = MainActivity::class.java.simpleName
-    }
 
     lateinit var router: Router
 

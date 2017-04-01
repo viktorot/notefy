@@ -20,17 +20,17 @@ import org.viktorot.notefy.models.NoteDbModel
 import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.note.NoteDetailsController
 import org.viktorot.notefy.repo.NoteRepository
+import org.viktorot.notefy.repository
 import org.viktorot.notefy.view.GridAutofitLayoutManager
+import timber.log.Timber
 
 class NoteListController : BaseController(), NotesListView {
 
-    companion object {
-        @JvmStatic
-        val TAG: String = NoteListController::class.java.simpleName
-    }
-
     private lateinit var adapter: NoteListAdapter
-    private lateinit var presenter: NoteListPresenter
+
+    private val presenter: NoteListPresenter by lazy {
+        NoteListPresenter(applicationContext!!.repository, this)
+    }
 
     lateinit var callback: MainActivityCallback
 
@@ -49,16 +49,27 @@ class NoteListController : BaseController(), NotesListView {
 
     override fun onViewCreated(view: View) {
         super.onViewCreated(view)
+        Timber.w("onViewCreated")
 
         attachCallbacks()
 
-        presenter = NoteListPresenter(NoteRepository(view.context), this)
-        presenter.getNotes()
+        presenter.init()
 
         initRecyclerView(view)
     }
 
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+        Timber.w("onAttach")
+    }
+
+    override fun onDetach(view: View) {
+        Timber.w("onDetach")
+        super.onDetach(view)
+    }
+
     override fun onDestroyView(view: View) {
+        Timber.w("onDestroyView")
         presenter.cleanUp()
 
         super.onDestroyView(view)
@@ -76,12 +87,14 @@ class NoteListController : BaseController(), NotesListView {
     }
 
     override fun showNotes(notes: List<NoteModel>) {
+        Timber.w("showNotes")
+
         val v: View = view ?: return
 
         v.error_view.visibility = View.GONE
         v.loading_view.visibility = View.GONE
         v.empty_view.visibility = View.GONE
-        v.note_list_recycler.visibility =  View.VISIBLE
+        v.note_list_recycler.visibility = View.VISIBLE
         adapter.setItems(notes)
     }
 
@@ -91,7 +104,7 @@ class NoteListController : BaseController(), NotesListView {
         v.error_view.visibility = View.GONE
         v.loading_view.visibility = View.VISIBLE
         v.empty_view.visibility = View.GONE
-        v.note_list_recycler.visibility =  View.GONE
+        v.note_list_recycler.visibility = View.GONE
     }
 
     override fun showEmptyView() {
@@ -100,7 +113,7 @@ class NoteListController : BaseController(), NotesListView {
         v.error_view.visibility = View.GONE
         v.loading_view.visibility = View.GONE
         v.empty_view.visibility = View.VISIBLE
-        v.note_list_recycler.visibility =  View.GONE
+        v.note_list_recycler.visibility = View.GONE
     }
 
     override fun showError() {
@@ -109,7 +122,7 @@ class NoteListController : BaseController(), NotesListView {
         v.error_view.visibility = View.VISIBLE
         v.loading_view.visibility = View.GONE
         v.empty_view.visibility = View.GONE
-        v.note_list_recycler.visibility =  View.GONE
+        v.note_list_recycler.visibility = View.GONE
     }
 
     override fun navigateToNote(note: NoteModel) {

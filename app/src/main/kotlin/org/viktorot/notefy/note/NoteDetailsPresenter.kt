@@ -8,12 +8,9 @@ import org.viktorot.notefy.base.BasePresenter
 import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.repo.NoteRepository
 import org.viktorot.notefy.utils.NotificationUtils
+import timber.log.Timber
 
 class NoteDetailsPresenter(private val repo: NoteRepository, private val view: NoteDetailsView) : BasePresenter(repo, view) {
-
-    companion object {
-        @JvmStatic val TAG: String = NoteDetailsPresenter::class.java.simpleName
-    }
 
     var isNew: Boolean = true
     lateinit var note: NoteModel
@@ -81,7 +78,7 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
                             updateNotification()
                         },
                         { error ->
-                            Log.e(TAG, error.toString())
+                            Timber.e("saving => $error")
                             view.showSaveError()
                         }
                 )
@@ -97,7 +94,7 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
                             updateNotification()
                         },
                         { error ->
-                            Log.e(TAG, error.toString())
+                            Timber.e("updating => $error")
                             view.showSaveError()
                         }
                 )
@@ -109,13 +106,17 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         {
-                            Log.d(TAG, "pinned state updated. new state => $note.pinned")
+                            Timber.d("pinned state updated. new state => $note.pinned")
                             updateNotification()
                         },
                         { error ->
-                            Log.e(TAG, "set pinned error => $error")
+                            Timber.e("update pinned state => $error")
                             view.showSaveError()
                         })
+    }
+
+    private fun hasChanges(): Boolean {
+        return true
     }
 
     private fun updateCanSaveState() {
@@ -126,7 +127,6 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
         note.pinned = !note.pinned
         view.setPinned(this.note.pinned)
     }
-
 
     private fun updateNotification() {
         NotificationUtils.notify(note)

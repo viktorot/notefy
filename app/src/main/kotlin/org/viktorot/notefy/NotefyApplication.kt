@@ -3,9 +3,9 @@ package org.viktorot.notefy
 import android.app.Application
 import android.content.Context
 import com.facebook.stetho.Stetho
-import com.jakewharton.rxrelay2.BehaviorRelay
-import io.reactivex.Observable
 import org.viktorot.notefy.db.NoteDbHelper
+import org.viktorot.notefy.repo.NoteRepository
+import timber.log.Timber
 
 class NotefyApplication: Application() {
 
@@ -13,22 +13,17 @@ class NotefyApplication: Application() {
         lateinit var ctx: Context
     }
 
-    lateinit var relay: BehaviorRelay<Boolean>
-
     override fun onCreate() {
         super.onCreate()
 
         NotefyApplication.ctx = applicationContext
 
-        relay = BehaviorRelay.createDefault(false)
+        Timber.plant(Timber.DebugTree())
 
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
         }
     }
-
-    val relayObservable: Observable<Boolean>
-        get() = relay.doAfterNext { state -> if(state) relay.accept(false) }
 }
 
 val String.Companion.empty: String
@@ -36,6 +31,9 @@ val String.Companion.empty: String
 
 val Context.database: NoteDbHelper
     get() = NoteDbHelper.getInstance(this)
+
+val Context.repository: NoteRepository
+    get() = NoteRepository.instance(this)
 
 val Context.timestamp: Int
     get() = (System.currentTimeMillis() / 1000).toInt()
