@@ -30,6 +30,8 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
     }
 
     fun saveChanges() {
+        if (!isNoteValid()) return
+
         when (this.isNew) {
             true -> saveNote()
             false -> updateNote()
