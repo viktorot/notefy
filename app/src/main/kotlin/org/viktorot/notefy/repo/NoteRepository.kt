@@ -69,7 +69,7 @@ class NoteRepository(val ctx: Context) {
 
     }
 
-    fun updateNote(id: Int, title: String, content: String, @DrawableRes iconResId: Int, pinned: Boolean): Single<Boolean> {
+    fun updateNote(id: Int, title: String, content: String, @DrawableRes iconResId: Int, pinned: Boolean): Completable {
         val db = ctx.database
         return Single.fromCallable {
             val iconId: Int = NoteIcons.getId(iconResId)
@@ -82,10 +82,10 @@ class NoteRepository(val ctx: Context) {
         }.map { success ->
             notesChangedRelay.accept(success)
             success
-        }
+        }.toCompletable()
     }
 
-    fun setPinned(id: Int, pinned: Boolean): Single<Boolean> {
+    fun setPinned(id: Int, pinned: Boolean): Completable {
         val db = ctx.database
         return Single.fromCallable {
             val res: Int = db.setPinned(id, pinned)
@@ -97,7 +97,7 @@ class NoteRepository(val ctx: Context) {
         }.map { success ->
             notesChangedRelay.accept(success)
             success
-        }
+        }.toCompletable()
     }
 
 }

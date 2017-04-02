@@ -75,6 +75,8 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
 
         attachCallbacks()
 
+        callback.showDarkStatusBar(true)
+
         val note: NoteModel? = args.getParcelable<NoteModel?>(NOTE)
 
         initToolbar()
@@ -102,6 +104,7 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
         callback.showFab(true)
         callback.showBackArrow(false)
         callback.resetTitle()
+        callback.showDarkStatusBar(false)
 
         titleSubscription.dispose()
         contentSubscription.dispose()

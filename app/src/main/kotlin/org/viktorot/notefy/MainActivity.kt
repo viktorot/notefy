@@ -1,15 +1,18 @@
 package org.viktorot.notefy
 
+import android.graphics.Color
 import android.os.Bundle
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.onClick
 import org.viktorot.notefy.base.MainActivityCallback
 import org.viktorot.notefy.notes_list.NoteListController
@@ -59,6 +62,28 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
         router.pushController(RouterTransaction.with(NoteDetailsController(args)))
 
         showFab(false)
+    }
+
+    override fun showDarkStatusBar(show: Boolean) {
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+
+        val statusBarColor: Int
+        val toolBarColor: Int
+
+        when (show) {
+            true ->  {
+                statusBarColor = ContextCompat.getColor(this, R.color.gray_900)
+                toolBarColor = ContextCompat.getColor(this, R.color.gray_dark)
+            }
+            false -> {
+                statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
+                toolBarColor = ContextCompat.getColor(this, R.color.colorPrimary)
+            }
+        }
+
+        window.statusBarColor = statusBarColor
+        toolbar.backgroundColor = toolBarColor
     }
 
     override fun showFab(show: Boolean) {

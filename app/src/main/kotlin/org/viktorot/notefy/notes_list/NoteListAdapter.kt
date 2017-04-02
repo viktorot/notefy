@@ -14,6 +14,9 @@ import android.widget.ToggleButton
 import org.jetbrains.anko.backgroundDrawable
 import org.jetbrains.anko.imageResource
 import org.jetbrains.anko.onClick
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 import org.viktorot.notefy.R
 import org.viktorot.notefy.models.NoteModel
 
@@ -48,9 +51,13 @@ class NoteListAdapter(val itemClickCallback: (id: Int) -> Unit, val pinnedToggle
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val note: NoteModel = items[position]
 
+
+
         holder.icon.imageResource = note.icon
         holder.title.text = note.title
-        holder.timestamp.text = note.timestamp.toString()
+
+        val date = DateTime(note.timestamp * 1000L)
+        holder.timestamp.text = date.toString(DateTimeFormat.forPattern("d MMMM, yyyy"))
 
         holder.setPinnedColor(note.pinned)
         holder.pin.onClick {

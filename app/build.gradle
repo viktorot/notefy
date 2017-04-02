@@ -78,6 +78,9 @@ dependencies {
 
     // timber
     compile 'com.jakewharton.timber:timber:4.5.1'
+
+    // joda
+    compile 'net.danlew:android.joda:2.9.9'
 }
 repositories {
     mavenCentral()
