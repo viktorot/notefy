@@ -10,17 +10,18 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.ToggleButton
+import kotlinx.android.synthetic.main.controller_note_details.view.*
 import org.jetbrains.anko.backgroundDrawable
 import org.jetbrains.anko.imageResource
 import org.jetbrains.anko.onClick
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 import org.viktorot.notefy.R
 import org.viktorot.notefy.models.NoteModel
+import org.viktorot.notefy.utils.DrawableUtils
 
 class NoteListAdapter(val itemClickCallback: (id: Int) -> Unit, val pinnedToggleCallback: (note: NoteModel, pinned: Boolean) -> Unit) : RecyclerView.Adapter<NoteViewHolder>() {
+
     private val items: MutableList<NoteModel> = mutableListOf()
 
     init {
@@ -49,9 +50,8 @@ class NoteListAdapter(val itemClickCallback: (id: Int) -> Unit, val pinnedToggle
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
+        val ctx = holder.rootView.context
         val note: NoteModel = items[position]
-
-
 
         holder.icon.imageResource = note.icon
         holder.title.text = note.title
@@ -66,6 +66,10 @@ class NoteListAdapter(val itemClickCallback: (id: Int) -> Unit, val pinnedToggle
         }
 
         holder.rootView.onClick { itemClickCallback(note.id) }
+
+        val accent = ContextCompat.getColor(ctx, R.color.colorAccent)
+        val background = DrawableUtils.getSelectableBackgroundCompat(Color.TRANSPARENT, accent, accent)
+        holder.rootView.backgroundDrawable = background
     }
 
     override fun getItemCount(): Int {

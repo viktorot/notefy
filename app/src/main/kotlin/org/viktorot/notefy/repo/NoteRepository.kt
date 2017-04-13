@@ -62,7 +62,8 @@ class NoteRepository(val ctx: Context) {
                 true -> res
                 false -> throw NoteSaveException()
             }
-        }.map { id ->
+        }//.doOnEvent { id, error ->  }
+         .map { id ->
             notesChangedRelay.accept(true)
             id
         }
