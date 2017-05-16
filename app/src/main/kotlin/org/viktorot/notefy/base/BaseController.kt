@@ -41,7 +41,7 @@ abstract class BaseController: Controller {
         super.onDestroyView(view)
     }
 
-    private val appCompatActivity: AppCompatActivity?
+    val appCompatActivity: AppCompatActivity?
         get() {
             if (activity != null) {
                 try {

@@ -1,10 +1,9 @@
 package org.viktorot.notefy.notes_list
 
 import android.os.Bundle
+import android.support.v7.view.ActionMode
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.bluelinelabs.conductor.RouterTransaction
 import kotlinx.android.synthetic.main.controller_note_list.view.*
 import org.viktorot.notefy.R
@@ -56,7 +55,11 @@ class NoteListController : BaseController(), NotesListView {
     private fun initRecyclerView(v: View) {
         v.note_list_recycler.layoutManager = LinearLayoutManager(applicationContext)
 
-        adapter = NoteListAdapter(presenter::onNoteClick, presenter::onPinToggled, { id, pos -> adapter.notifyItemChanged(pos) })
+        adapter = NoteListAdapter(presenter::onNoteClick, presenter::onPinToggled,
+                {
+                    id, pos -> appCompatActivity!!.startSupportActionMode(ActionModeCallback())
+                })
+
         v.note_list_recycler.adapter = adapter
     }
 
@@ -107,6 +110,29 @@ class NoteListController : BaseController(), NotesListView {
         router?.pushController(RouterTransaction.with(NoteDetailsController(args)))
 
         callback.showFab(false)
+    }
+
+
+    private class ActionModeCallback: ActionMode.Callback {
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            return true
+        }
+
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            mode ?: return false
+            mode.menuInflater.inflate(R.menu.action_mode, menu)
+
+            return true
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+        }
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            return false
+        }
+
     }
 
 }

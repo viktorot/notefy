@@ -79,9 +79,7 @@ class NoteListAdapter(
 
         holder.rootCardView.onLongClick {
             Timber.v("long press on => %d", note.id)
-            //longPressCallback(note.id, position)
-            toggleSelectedState(position)
-            notifyItemChanged(position)
+            longPressCallback(note.id, position)
             true
         }
 
