@@ -3,26 +3,31 @@ package org.viktorot.notefy.notes_list
 import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
+import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
+import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import kotlinx.android.synthetic.main.controller_note_details.view.*
-import org.jetbrains.anko.backgroundDrawable
-import org.jetbrains.anko.imageResource
-import org.jetbrains.anko.onClick
+import org.jetbrains.anko.*
+import org.jetbrains.anko.collections.asSequence
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.viktorot.notefy.R
 import org.viktorot.notefy.models.NoteModel
-import org.viktorot.notefy.utils.DrawableUtils
+import timber.log.Timber
 
-class NoteListAdapter(val itemClickCallback: (id: Int) -> Unit, val pinnedToggleCallback: (note: NoteModel, pinned: Boolean) -> Unit) : RecyclerView.Adapter<NoteViewHolder>() {
+class NoteListAdapter(
+        val itemClickCallback: (id: Int) -> Unit,
+        val pinnedToggleCallback: (note: NoteModel, pinned: Boolean) -> Unit,
+        val longPressCallback: (id: Int, pos: Int) -> Unit) : RecyclerView.Adapter<NoteViewHolder>() {
 
     private val items: MutableList<NoteModel> = mutableListOf()
+
+    private val selections: SparseBooleanArray = SparseBooleanArray()
 
     init {
     }
@@ -50,7 +55,7 @@ class NoteListAdapter(val itemClickCallback: (id: Int) -> Unit, val pinnedToggle
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
-        val ctx = holder.rootView.context
+        val ctx = holder.rootCardView.context
         val note: NoteModel = items[position]
 
         holder.icon.imageResource = note.icon
@@ -65,20 +70,60 @@ class NoteListAdapter(val itemClickCallback: (id: Int) -> Unit, val pinnedToggle
             pinnedToggleCallback(note, newState)
         }
 
-        holder.rootView.onClick { itemClickCallback(note.id) }
+        holder.rootCardView.onClick {
+            //itemClickCallback(note.id)
 
-        val accent = ContextCompat.getColor(ctx, R.color.colorAccent)
-        val background = DrawableUtils.getSelectableBackgroundCompat(Color.TRANSPARENT, accent, accent)
-        holder.rootView.backgroundDrawable = background
+            toggleSelectedState(position)
+            notifyItemChanged(position)
+        }
+
+        holder.rootCardView.onLongClick {
+            Timber.v("long press on => %d", note.id)
+            //longPressCallback(note.id, position)
+            toggleSelectedState(position)
+            notifyItemChanged(position)
+            true
+        }
+
+        val isSelected = selections.get(position, false)
+        when (isSelected) {
+            true -> {
+                holder.rootCardView.setCardBackgroundColor(Color.LTGRAY)
+            }
+            false -> {
+                holder.rootCardView.setCardBackgroundColor(Color.WHITE)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
         return items.size
     }
+
+    /*
+           ITEM SELECTION
+     */
+
+    private fun toggleSelectedState(position: Int) {
+        val selected = isSelected(position)
+        selections.put(position, !selected)
+    }
+
+    private fun isSelected(position: Int): Boolean {
+        return selections.get(position, false)
+    }
+
+    fun clearSelection() {
+        if (selections.size() == 0) return
+
+        for (i in 0 .. selections.size()) {
+            selections.put(i, false)
+        }
+    }
 }
 
 class NoteViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-    val rootView: View = itemView.findViewById(R.id.root_view)
+    val rootCardView: CardView = itemView.findViewById(R.id.root_view) as CardView
     val icon: ImageView = itemView.findViewById(R.id.icon) as ImageView
     val title: TextView = itemView.findViewById(R.id.title) as TextView
     val timestamp: TextView = itemView.findViewById(R.id.timestamp) as TextView

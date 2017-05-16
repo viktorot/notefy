@@ -56,7 +56,7 @@ class NoteListController : BaseController(), NotesListView {
     private fun initRecyclerView(v: View) {
         v.note_list_recycler.layoutManager = LinearLayoutManager(applicationContext)
 
-        adapter = NoteListAdapter(presenter::onNoteClick, presenter::onPinToggled)
+        adapter = NoteListAdapter(presenter::onNoteClick, presenter::onPinToggled, { id, pos -> adapter.notifyItemChanged(pos) })
         v.note_list_recycler.adapter = adapter
     }
 
