@@ -99,13 +99,18 @@ class NoteListAdapter(
     }
 
     val selectedCount: Int get() {
-        return selections.asSequence<Boolean>().fold(0, {acc, selected ->
-            Timber.v("----- %b", selected)
-            when(selected) {
-                true -> return@fold acc + 1
-                false -> return@fold acc
-            }
-        })
+//        return selections.asSequence<Boolean>().fold(0, {acc, selected ->
+//            Timber.v("----- %b", selected)
+//            when(selected) {
+//                true -> return@fold acc + 1
+//                false -> return@fold acc
+//            }
+//        })
+        var res: Int = 0;
+        for (i in 0 .. selections.size()) {
+            if (selections.get(i)) res ++
+        }
+        return res
     }
 
     /*

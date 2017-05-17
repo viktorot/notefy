@@ -18,6 +18,8 @@ class NoteListController : BaseController(), NotesListView {
 
     private lateinit var adapter: NoteListAdapter
 
+    private var actionMode: ActionModeCallback? = null
+
     private val presenter: NoteListPresenter by lazy {
         NoteListPresenter(applicationContext!!.repository, this)
     }
@@ -67,7 +69,14 @@ class NoteListController : BaseController(), NotesListView {
     }
 
     private fun onItemLongPress(id: Int, position: Int) {
-        appCompatActivity!!.startSupportActionMode(ActionModeCallback())
+        val am = ActionModeCallback()
+        appCompatActivity!!.startSupportActionMode(am)
+
+        actionMode = am
+    }
+
+    fun updateActionModeTitle() {
+        appCompatActivity?.actionBar?.title = "11111"
     }
 
     override fun updateNote(note: NoteModel) {
@@ -128,8 +137,9 @@ class NoteListController : BaseController(), NotesListView {
 
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
             mode ?: return false
-            mode.menuInflater.inflate(R.menu.action_mode, menu)
 
+            mode.menuInflater.inflate(R.menu.action_mode, menu)
+            //NoteListController@this.upda
             return true
         }
 
