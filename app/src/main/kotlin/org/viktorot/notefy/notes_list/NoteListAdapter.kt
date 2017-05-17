@@ -71,20 +71,20 @@ class NoteListAdapter(
         }
 
         holder.rootCardView.onClick {
-            //itemClickCallback(note.id)
-
-            toggleSelectedState(position)
-            notifyItemChanged(position)
+            itemClickCallback(note.id)
         }
 
         holder.rootCardView.onLongClick {
             Timber.v("long press on => %d", note.id)
-            longPressCallback(note.id, position)
+            //longPressCallback(note.id, position)
+
+            toggleSelectedState(position)
+            notifyItemChanged(position)
+
             true
         }
 
-        val isSelected = selections.get(position, false)
-        when (isSelected) {
+        when (isSelected(position)) {
             true -> {
                 holder.rootCardView.setCardBackgroundColor(Color.LTGRAY)
             }
@@ -96,6 +96,16 @@ class NoteListAdapter(
 
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    val selectedCount: Int get() {
+        return selections.asSequence<Boolean>().fold(0, {acc, selected ->
+            Timber.v("----- %b", selected)
+            when(selected) {
+                true -> return@fold acc + 1
+                false -> return@fold acc
+            }
+        })
     }
 
     /*

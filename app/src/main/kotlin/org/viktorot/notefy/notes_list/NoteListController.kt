@@ -12,6 +12,7 @@ import org.viktorot.notefy.base.MainActivityCallback
 import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.note.NoteDetailsController
 import org.viktorot.notefy.repository
+import timber.log.Timber
 
 class NoteListController : BaseController(), NotesListView {
 
@@ -55,12 +56,18 @@ class NoteListController : BaseController(), NotesListView {
     private fun initRecyclerView(v: View) {
         v.note_list_recycler.layoutManager = LinearLayoutManager(applicationContext)
 
-        adapter = NoteListAdapter(presenter::onNoteClick, presenter::onPinToggled,
-                {
-                    id, pos -> appCompatActivity!!.startSupportActionMode(ActionModeCallback())
-                })
+        adapter = NoteListAdapter(this::onItemClick, presenter::onPinToggled, this::onItemLongPress)
 
         v.note_list_recycler.adapter = adapter
+    }
+
+    private fun onItemClick(id: Int) {
+        //presenter.onNoteClick(id)
+        Timber.v("selected => %d", adapter.selectedCount)
+    }
+
+    private fun onItemLongPress(id: Int, position: Int) {
+        appCompatActivity!!.startSupportActionMode(ActionModeCallback())
     }
 
     override fun updateNote(note: NoteModel) {

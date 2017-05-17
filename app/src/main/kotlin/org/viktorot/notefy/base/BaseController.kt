@@ -41,7 +41,7 @@ abstract class BaseController: Controller {
         super.onDestroyView(view)
     }
 
-    val appCompatActivity: AppCompatActivity?
+    protected val appCompatActivity: AppCompatActivity?
         get() {
             if (activity != null) {
                 try {
@@ -57,13 +57,13 @@ abstract class BaseController: Controller {
             }
         }
 
-    val notefyApp: NotefyApplication
+    protected val notefyApp: NotefyApplication
         get() = applicationContext as NotefyApplication
 
-    val actionBar: ActionBar?
+    protected val actionBar: ActionBar?
         get() = appCompatActivity!!.supportActionBar
 
-    val fragmentManager: FragmentManager?
+    protected val fragmentManager: FragmentManager?
         get() = appCompatActivity!!.supportFragmentManager
 
 }
