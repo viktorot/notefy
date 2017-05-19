@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.controller_note_list.view.*
 import org.viktorot.notefy.R
 import org.viktorot.notefy.base.BaseController
 import org.viktorot.notefy.base.MainActivityCallback
+import org.viktorot.notefy.empty
 import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.note.NoteDetailsController
 import org.viktorot.notefy.repository
@@ -18,7 +19,9 @@ class NoteListController : BaseController(), NotesListView {
 
     private lateinit var adapter: NoteListAdapter
 
-    private var actionMode: ActionModeCallback? = null
+    private var actionMode: ActionMode? = null
+
+    private val actionModeActive: Boolean get() = actionMode != null
 
     private val presenter: NoteListPresenter by lazy {
         NoteListPresenter(applicationContext!!.repository, this)
@@ -58,25 +61,65 @@ class NoteListController : BaseController(), NotesListView {
     private fun initRecyclerView(v: View) {
         v.note_list_recycler.layoutManager = LinearLayoutManager(applicationContext)
 
-        adapter = NoteListAdapter(this::onItemClick, presenter::onPinToggled, this::onItemLongPress)
+        adapter = NoteListAdapter(
+                this::onItemClick,
+                presenter::onPinToggled,
+                this::onItemLongPress,
+                this::onSelectionStateChanged,
+                this::onItemSelected
+        )
 
         v.note_list_recycler.adapter = adapter
     }
 
     private fun onItemClick(id: Int) {
         //presenter.onNoteClick(id)
-        Timber.v("selected => %d", adapter.selectedCount)
     }
 
     private fun onItemLongPress(id: Int, position: Int) {
-        val am = ActionModeCallback()
-        appCompatActivity!!.startSupportActionMode(am)
 
-        actionMode = am
     }
 
-    fun updateActionModeTitle() {
-        appCompatActivity?.actionBar?.title = "11111"
+    private fun onSelectionStateChanged(active: Boolean) {
+        Timber.v("selection active $active")
+
+        when (active) {
+            true -> {
+                when (actionModeActive) {
+                    true -> updateActionModeTitle()
+                    false -> {
+                        startActionMode()
+                        updateActionModeTitle()
+                    }
+                }
+            }
+            false -> {
+                closeActionMode()
+            }
+        }
+    }
+
+    private fun onItemSelected(position: Int, selected: Boolean) {
+        updateActionModeTitle()
+    }
+
+    private fun startActionMode() {
+        actionMode = appCompatActivity!!.startSupportActionMode(ActionModeCallback())
+    }
+
+    private fun closeActionMode() {
+        adapter.clearSelection()
+
+        actionMode?.finish()
+        actionMode = null
+    }
+
+    private fun updateActionModeTitle() {
+        val count = adapter.selectedCount
+        when (count > 0) {
+            true -> actionMode?.title = "[$count selected]"
+            false -> actionMode?.title = String.empty
+        }
     }
 
     override fun updateNote(note: NoteModel) {
@@ -128,8 +171,11 @@ class NoteListController : BaseController(), NotesListView {
         callback.showFab(false)
     }
 
+    /*
+        ACTION MODE
+     */
 
-    private class ActionModeCallback: ActionMode.Callback {
+    inner class ActionModeCallback: ActionMode.Callback {
 
         override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
             return true
@@ -139,15 +185,15 @@ class NoteListController : BaseController(), NotesListView {
             mode ?: return false
 
             mode.menuInflater.inflate(R.menu.action_mode, menu)
-            //NoteListController@this.upda
             return true
-        }
-
-        override fun onDestroyActionMode(mode: ActionMode?) {
         }
 
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
             return false
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            this@NoteListController.closeActionMode()
         }
 
     }

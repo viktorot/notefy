@@ -23,11 +23,15 @@ import timber.log.Timber
 class NoteListAdapter(
         val itemClickCallback: (id: Int) -> Unit,
         val pinnedToggleCallback: (note: NoteModel, pinned: Boolean) -> Unit,
-        val longPressCallback: (id: Int, pos: Int) -> Unit) : RecyclerView.Adapter<NoteViewHolder>() {
+        val longPressCallback: (id: Int, pos: Int) -> Unit,
+        val onSelectionStateUpdated: (active: Boolean) -> Unit,
+        val onItemSelected: (pos: Int, selected: Boolean) -> Unit) : RecyclerView.Adapter<NoteViewHolder>() {
 
     private val items: MutableList<NoteModel> = mutableListOf()
 
     private val selections: SparseBooleanArray = SparseBooleanArray()
+
+    private var selectionActive: Boolean = false
 
     init {
     }
@@ -71,16 +75,15 @@ class NoteListAdapter(
         }
 
         holder.rootCardView.onClick {
-            itemClickCallback(note.id)
+            when (selectionActive) {
+                true -> toggleSelectedState(position)
+                false -> itemClickCallback(note.id)
+            }
         }
 
         holder.rootCardView.onLongClick {
-            Timber.v("long press on => %d", note.id)
             //longPressCallback(note.id, position)
-
             toggleSelectedState(position)
-            notifyItemChanged(position)
-
             true
         }
 
@@ -98,32 +101,36 @@ class NoteListAdapter(
         return items.size
     }
 
-    val selectedCount: Int get() {
-//        return selections.asSequence<Boolean>().fold(0, {acc, selected ->
-//            Timber.v("----- %b", selected)
-//            when(selected) {
-//                true -> return@fold acc + 1
-//                false -> return@fold acc
-//            }
-//        })
-        var res: Int = 0;
-        for (i in 0 .. selections.size()) {
-            if (selections.get(i)) res ++
-        }
-        return res
-    }
-
     /*
            ITEM SELECTION
      */
 
+    val selectedCount: Int get() =
+        (0 .. selections.size()).count { selections.valueAt(it) }
+
     private fun toggleSelectedState(position: Int) {
-        val selected = isSelected(position)
-        selections.put(position, !selected)
+        val oldState = isSelected(position)
+        selections.put(position, !oldState)
+
+        onItemSelected(position, !oldState)
+
+        updateSelectionState()
+        notifyItemChanged(position)
     }
 
     private fun isSelected(position: Int): Boolean {
         return selections.get(position, false)
+    }
+
+    private fun updateSelectionState() {
+        val newSelectionState = selectedCount > 0
+
+        Timber.v("selection count $selectedCount")
+
+        if (newSelectionState != selectionActive) {
+            selectionActive = newSelectionState
+            onSelectionStateUpdated(selectionActive)
+        }
     }
 
     fun clearSelection() {
@@ -131,7 +138,10 @@ class NoteListAdapter(
 
         for (i in 0 .. selections.size()) {
             selections.put(i, false)
+            notifyItemChanged(i)
         }
+
+        selectionActive = false
     }
 }
 
