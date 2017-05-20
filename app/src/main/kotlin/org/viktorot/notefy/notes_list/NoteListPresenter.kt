@@ -80,6 +80,14 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
                         })
     }
 
+    fun deleteNote(positions: List<Int>) {
+        // TODO: remove from db
+        val toRemove = positions.map { notes[it] }
+        notes.removeAll(toRemove)
+
+        view.onNotesDeleted(positions)
+    }
+
     private fun retrieveNotes() {
         notesDisposable = repo.getNotes()
                 .subscribeOn(Schedulers.io())

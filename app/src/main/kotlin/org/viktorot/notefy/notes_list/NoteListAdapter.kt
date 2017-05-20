@@ -52,6 +52,13 @@ class NoteListAdapter(
         }
     }
 
+    fun removeItem(positions: List<Int>) {
+        val toRemove: List<NoteModel> = positions.map { items[it] }
+        items.removeAll(toRemove)
+
+        positions.forEach { notifyItemRemoved(it) }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         val inflatedView = LayoutInflater.from(parent.context).inflate(R.layout.item_note, parent, false)
         val itemView = NoteViewHolder(inflatedView)
@@ -70,6 +77,11 @@ class NoteListAdapter(
 
         holder.setPinnedColor(note.pinned)
         holder.pin.onClick {
+            if (selectionActive) {
+                toggleSelectedState(position)
+                return@onClick
+            }
+
             val newState = !note.pinned
             pinnedToggleCallback(note, newState)
         }
@@ -106,7 +118,13 @@ class NoteListAdapter(
      */
 
     val selectedCount: Int get() =
-        (0 .. selections.size()).count { selections.valueAt(it) }
+        (0 .. selections.size())
+                .count { selections.valueAt(it) }
+
+    val selectedIndices: List<Int> get() =
+        (0 .. selections.size())
+                .filter { selections.valueAt(it) }
+                .map { selections.keyAt(it) }
 
     private fun toggleSelectedState(position: Int) {
         val oldState = isSelected(position)

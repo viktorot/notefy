@@ -81,8 +81,6 @@ class NoteListController : BaseController(), NotesListView {
     }
 
     private fun onSelectionStateChanged(active: Boolean) {
-        Timber.v("selection active $active")
-
         when (active) {
             true -> {
                 when (actionModeActive) {
@@ -171,6 +169,14 @@ class NoteListController : BaseController(), NotesListView {
         callback.showFab(false)
     }
 
+    override fun onNotesDeleted(positions: List<Int>) {
+        adapter.removeItem(positions)
+    }
+
+    private fun deleteNote(positions: List<Int>) {
+        presenter.deleteNote(positions)
+    }
+
     /*
         ACTION MODE
      */
@@ -189,7 +195,16 @@ class NoteListController : BaseController(), NotesListView {
         }
 
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-            return false
+            item ?: return false
+
+            when (item.itemId) {
+                R.id.action_delete_note -> {
+                    deleteNote(adapter.selectedIndices)
+                    closeActionMode()
+                }
+            }
+
+            return true
         }
 
         override fun onDestroyActionMode(mode: ActionMode?) {
