@@ -143,8 +143,6 @@ class NoteListAdapter(
     private fun updateSelectionState() {
         val newSelectionState = selectedCount > 0
 
-        Timber.v("selection count $selectedCount")
-
         if (newSelectionState != selectionActive) {
             selectionActive = newSelectionState
             onSelectionStateUpdated(selectionActive)

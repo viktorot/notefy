@@ -8,6 +8,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.viktorot.notefy.database
+import org.viktorot.notefy.exceptions.NoteDeleteException
 import org.viktorot.notefy.exceptions.NoteSaveException
 import org.viktorot.notefy.exceptions.NoteUpdateException
 import org.viktorot.notefy.exceptions.PinnedStateUpdateException
@@ -63,10 +64,10 @@ class NoteRepository(val ctx: Context) {
                 false -> throw NoteSaveException()
             }
         }//.doOnEvent { id, error ->  }
-         .map { id ->
-            notesChangedRelay.accept(true)
-            id
-        }
+                .map { id ->
+                    notesChangedRelay.accept(true)
+                    id
+                }
 
     }
 
@@ -85,6 +86,29 @@ class NoteRepository(val ctx: Context) {
             success
         }.toCompletable()
     }
+
+    fun deleteNote(id: Int): Single<Int> {
+        val db = ctx.database
+        return Single.fromCallable {
+            val res: Int = db.delete(id)
+
+            when (res > 0) {
+                true -> id
+                false -> throw NoteDeleteException("error deleting note id => $id")
+            }
+        }.map { id ->
+            notesChangedRelay.accept(true)
+            id
+        }
+
+    }
+
+//    fun deleteNote(id: Int): Boolean {
+//        val db = ctx.database
+//        //val res: Int = db.delete(id)
+//        //return res > 0
+//        throw NoteDeleteException("error deleting note id => $id")
+//    }
 
     fun setPinned(id: Int, pinned: Boolean): Completable {
         val db = ctx.database

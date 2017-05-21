@@ -74,6 +74,12 @@ class NoteDbHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, NoteDbContract.T
         }
     }
 
+    fun delete(id: Int): Int {
+        return use {
+            delete(NoteDbContract.TABLE_NAME, "${NoteDbContract.PRIMARY_KEY} = {id}", "id" to id)
+        }
+    }
+
     fun setPinned(id: Int, pinned: Boolean): Int {
         return use {
             update (NoteDbContract.TABLE_NAME, NoteDbContract.PINNED to if(pinned) 1 else 0)

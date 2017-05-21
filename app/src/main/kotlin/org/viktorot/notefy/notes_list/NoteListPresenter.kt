@@ -1,9 +1,11 @@
 package org.viktorot.notefy.notes_list
 
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.viktorot.notefy.base.BasePresenter
+import org.viktorot.notefy.exceptions.NoteDeleteException
 import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.repo.NoteRepository
 import org.viktorot.notefy.utils.NotificationUtils
@@ -15,6 +17,7 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
 
     private var pinnedUpdateDisposable: Disposable? = null
     private var notesDisposable: Disposable? = null
+    private var deleteDisposable: Disposable? = null
 
     private lateinit var notesChangedDisposable: Disposable
 
@@ -81,11 +84,17 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
     }
 
     fun deleteNote(positions: List<Int>) {
-        // TODO: remove from db
-        val toRemove = positions.map { notes[it] }
-        notes.removeAll(toRemove)
-
-        view.onNotesDeleted(positions)
+        Observable.fromIterable(positions)
+                .subscribeOn(Schedulers.io())
+                .map { pos: Int -> notes[pos].id }
+                .flatMap { id -> repo.deleteNote(id).toObservable() }
+                .doOnError { error -> Timber.e(error) }
+                .map { id -> notes.indexOfFirst { it.id == id } }
+                .toList()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { deletedPositions: List<Int> ->
+                    view.onNotesDeleted(deletedPositions)
+                }
     }
 
     private fun retrieveNotes() {
@@ -114,6 +123,7 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
         notesDisposable?.dispose()
         pinnedUpdateDisposable?.dispose()
         notesChangedDisposable.dispose()
+        deleteDisposable?.dispose()
     }
 
 }
