@@ -89,11 +89,8 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
                 .map { pos: Int -> notes[pos].id }
                 .flatMap { id -> repo.deleteNote(id).toObservable() }
                 .doOnError { error -> Timber.e(error) }
-                .map { id -> notes.indexOfFirst { it.id == id } }
-                .toList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { deletedPositions: List<Int> ->
-                    view.onNotesDeleted(deletedPositions)
+                .subscribe { id: Int ->
+                    Timber.d("note id => %d deleted", id)
                 }
     }
 

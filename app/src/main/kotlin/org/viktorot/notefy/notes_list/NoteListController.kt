@@ -73,7 +73,7 @@ class NoteListController : BaseController(), NotesListView {
     }
 
     private fun onItemClick(id: Int) {
-        //presenter.onNoteClick(id)
+        presenter.onNoteClick(id)
     }
 
     private fun onItemLongPress(id: Int, position: Int) {

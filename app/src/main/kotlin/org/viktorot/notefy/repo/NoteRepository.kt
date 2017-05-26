@@ -63,12 +63,10 @@ class NoteRepository(val ctx: Context) {
                 true -> res
                 false -> throw NoteSaveException()
             }
-        }//.doOnEvent { id, error ->  }
-                .map { id ->
-                    notesChangedRelay.accept(true)
-                    id
-                }
-
+        }.map { id ->
+            notesChangedRelay.accept(true)
+            id
+        }
     }
 
     fun updateNote(id: Int, title: String, content: String, @DrawableRes iconResId: Int, pinned: Boolean): Completable {
