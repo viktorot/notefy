@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.SystemClock
 import android.support.annotation.DrawableRes
 import com.jakewharton.rxrelay2.BehaviorRelay
+import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -36,7 +37,14 @@ class NoteRepository(val ctx: Context) {
     private val notesChangedRelay: BehaviorRelay<Boolean> = BehaviorRelay.createDefault(true)
     fun getNotesChangedObservable(): Observable<Boolean> {
         return notesChangedRelay.doOnNext { changed ->
-            Timber.w("new changes state => $changed")
+            Timber.v("new changes state accepted => $changed")
+        }
+    }
+
+    private val changeTypeRelay: PublishRelay<String> = PublishRelay.create()
+    fun changeTypeObservable(): Observable<String> {
+        return changeTypeRelay.doOnNext { type ->
+            Timber.v("change accepted => $type")
         }
     }
 
@@ -65,6 +73,7 @@ class NoteRepository(val ctx: Context) {
             }
         }.map { id ->
             notesChangedRelay.accept(true)
+            changeTypeRelay.accept("save")
             id
         }
     }
@@ -81,6 +90,7 @@ class NoteRepository(val ctx: Context) {
             }
         }.map { success ->
             notesChangedRelay.accept(success)
+            changeTypeRelay.accept("update")
             success
         }.toCompletable()
     }

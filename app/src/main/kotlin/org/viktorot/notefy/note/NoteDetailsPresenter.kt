@@ -76,7 +76,7 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
                             note.id = id
                             isNew = false
 
-                            view.showSaveSuccess("[Note saved]")
+                            //view.showSaveSuccess("[Note saved]")
                             updateNotification()
                         },{ error ->
                             Timber.e("saving => $error")
@@ -90,7 +90,7 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                            view.showSaveSuccess("[Note updated]")
+                            //view.showSaveSuccess("[Note updated]")
                             updateNotification()
                         },{ error ->
                             Timber.e("updating => $error")

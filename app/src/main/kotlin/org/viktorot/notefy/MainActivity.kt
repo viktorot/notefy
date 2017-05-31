@@ -2,6 +2,7 @@ package org.viktorot.notefy
 
 import android.os.Bundle
 import android.support.annotation.DrawableRes
+import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -9,16 +10,20 @@ import android.view.WindowManager
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.onClick
 import org.viktorot.notefy.base.MainActivityCallback
 import org.viktorot.notefy.note.NoteDetailsController
 import org.viktorot.notefy.notes_list.NoteListController
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), MainActivityCallback {
 
     lateinit var router: Router
+
+    var changeTypeDisposable: Disposable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,10 +37,25 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
             router.setRoot(RouterTransaction.with(NoteListController()))
         }
 
+        changeTypeDisposable = applicationContext!!.repository.changeTypeObservable()
+                .subscribe({ type: String ->
+                    when (type) {
+                        "save" -> showUpdateSnackbar("[Note saved]")
+                        "update" -> showUpdateSnackbar("[Note updated]")
+                        else -> Timber.w("unknown update state => $type")
+                    }
+                    Timber.v("change type => $type")
+                })
+
         fab.onClick { openNote() }
 
         showFab(true)
         initToolbar()
+    }
+
+    override fun onDestroy() {
+        changeTypeDisposable?.dispose()
+        super.onDestroy()
     }
 
     override fun onBackPressed() {
@@ -51,6 +71,10 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
         }
     }
 
+
+    private fun showUpdateSnackbar(text: String) {
+        Snackbar.make(root_view, text, Snackbar.LENGTH_SHORT).show()
+    }
 
     private fun openNote() {
         val args: Bundle = Bundle()

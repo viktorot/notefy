@@ -25,7 +25,6 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
         notesChangedDisposable = repo.getNotesChangedObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ changed ->
-                            Timber.w("noted changed => $changed")
                             if (changed) updateNotes()
                         },{ error ->
                             Timber.e("notes changed => $error")
