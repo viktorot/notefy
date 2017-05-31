@@ -6,10 +6,11 @@ import android.support.annotation.DrawableRes
 import org.viktorot.notefy.empty
 import org.viktorot.notefy.utils.NoteIcons
 
-class NoteModel: Parcelable {
+class NoteModel : Parcelable {
 
     companion object {
-        @JvmStatic val CREATOR: Parcelable.Creator<NoteModel> = object: Parcelable.Creator<NoteModel> {
+        @JvmStatic
+        val CREATOR: Parcelable.Creator<NoteModel> = object : Parcelable.Creator<NoteModel> {
             override fun newArray(size: Int): Array<out NoteModel> {
                 return newArray(size)
             }
@@ -54,9 +55,12 @@ class NoteModel: Parcelable {
 
     override fun equals(other: Any?): Boolean {
         if (other is NoteModel) {
-            return other.id == this.id
+            return  other.id == this.id &&
+                    other.title == this.title &&
+                    other.content == this.content &&
+                    other.icon == this.icon &&
+                    other.pinned == this.pinned
         }
-
         return false
     }
 
@@ -70,12 +74,16 @@ class NoteModel: Parcelable {
             writeString(title)
             writeString(content)
             writeInt(icon)
-            writeInt(if(pinned) 1 else 0)
+            writeInt(if (pinned) 1 else 0)
             writeInt(timestamp)
         }
     }
 
     override fun describeContents(): Int {
         return this.id
+    }
+
+    fun copy(): NoteModel {
+        return NoteModel(id, title, content, icon, pinned, timestamp)
     }
 }

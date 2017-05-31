@@ -69,6 +69,8 @@ class NoteListAdapter(
         val ctx = holder.rootCardView.context
         val note: NoteModel = items[position]
 
+        Timber.v("binding $position")
+
         holder.icon.imageResource = note.icon
         holder.title.text = note.title
 

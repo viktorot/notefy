@@ -3,9 +3,9 @@ package org.viktorot.notefy.notes_list
 import android.os.Bundle
 import android.support.v7.view.ActionMode
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.*
 import com.bluelinelabs.conductor.RouterTransaction
-import kotlinx.android.synthetic.main.controller_note_list.view.*
 import org.viktorot.notefy.R
 import org.viktorot.notefy.base.BaseController
 import org.viktorot.notefy.base.MainActivityCallback
@@ -13,7 +13,6 @@ import org.viktorot.notefy.empty
 import org.viktorot.notefy.models.NoteModel
 import org.viktorot.notefy.note.NoteDetailsController
 import org.viktorot.notefy.repository
-import timber.log.Timber
 
 class NoteListController : BaseController(), NotesListView {
 
@@ -22,6 +21,14 @@ class NoteListController : BaseController(), NotesListView {
     private var actionMode: ActionMode? = null
 
     private val actionModeActive: Boolean get() = actionMode != null
+
+    private lateinit var recycler: RecyclerView
+
+    private lateinit var loadingView: View
+
+    private lateinit var emptyView: View
+
+    private lateinit var errorView: View
 
     private val presenter: NoteListPresenter by lazy {
         NoteListPresenter(applicationContext!!.repository, this)
@@ -46,10 +53,15 @@ class NoteListController : BaseController(), NotesListView {
         super.onViewCreated(view)
         attachCallbacks()
 
+        recycler = view.findViewById(R.id.note_list_recycler) as RecyclerView
+        emptyView = view.findViewById(R.id.empty_view)
+        loadingView = view.findViewById(R.id.loading_view)
+        errorView = view.findViewById(R.id.error_view)
+
+        initRecyclerView()
+
         presenter.init()
         presenter.getNotes()
-
-        initRecyclerView(view)
     }
 
     override fun onDestroyView(view: View) {
@@ -58,8 +70,8 @@ class NoteListController : BaseController(), NotesListView {
         super.onDestroyView(view)
     }
 
-    private fun initRecyclerView(v: View) {
-        v.note_list_recycler.layoutManager = LinearLayoutManager(applicationContext)
+    private fun initRecyclerView() {
+        recycler.layoutManager = LinearLayoutManager(applicationContext)
 
         adapter = NoteListAdapter(
                 this::onItemClick,
@@ -69,7 +81,7 @@ class NoteListController : BaseController(), NotesListView {
                 this::onItemSelected
         )
 
-        v.note_list_recycler.adapter = adapter
+        recycler.adapter = adapter
     }
 
     private fun onItemClick(id: Int) {
@@ -125,40 +137,32 @@ class NoteListController : BaseController(), NotesListView {
     }
 
     override fun showNotes(notes: List<NoteModel>) {
-        val v: View = view ?: return
-
-        v.error_view.visibility = View.GONE
-        v.loading_view.visibility = View.GONE
-        v.empty_view.visibility = View.GONE
-        v.note_list_recycler.visibility = View.VISIBLE
+        errorView.visibility = View.GONE
+        loadingView.visibility = View.GONE
+        emptyView.visibility = View.GONE
+        recycler.visibility = View.VISIBLE
         adapter.setItems(notes)
     }
 
     override fun showLoadingView() {
-        val v: View = view ?: return
-
-        v.error_view.visibility = View.GONE
-        v.loading_view.visibility = View.VISIBLE
-        v.empty_view.visibility = View.GONE
-        v.note_list_recycler.visibility = View.GONE
+        errorView.visibility = View.GONE
+        loadingView.visibility = View.VISIBLE
+        emptyView.visibility = View.GONE
+        recycler.visibility = View.GONE
     }
 
     override fun showEmptyView() {
-        val v: View = view ?: return
-
-        v.error_view.visibility = View.GONE
-        v.loading_view.visibility = View.GONE
-        v.empty_view.visibility = View.VISIBLE
-        v.note_list_recycler.visibility = View.GONE
+        errorView.visibility = View.GONE
+        loadingView.visibility = View.GONE
+        emptyView.visibility = View.VISIBLE
+        recycler.visibility = View.GONE
     }
 
     override fun showError() {
-        val v: View = view ?: return
-
-        v.error_view.visibility = View.VISIBLE
-        v.loading_view.visibility = View.GONE
-        v.empty_view.visibility = View.GONE
-        v.note_list_recycler.visibility = View.GONE
+        errorView.visibility = View.VISIBLE
+        loadingView.visibility = View.GONE
+        emptyView.visibility = View.GONE
+        recycler.visibility = View.GONE
     }
 
     override fun navigateToNote(note: NoteModel) {

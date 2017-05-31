@@ -1,14 +1,9 @@
 package org.viktorot.notefy
 
-import android.graphics.Color
 import android.os.Bundle
 import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.view.ActionMode
-import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import com.bluelinelabs.conductor.Conductor
@@ -18,9 +13,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.onClick
 import org.viktorot.notefy.base.MainActivityCallback
-import org.viktorot.notefy.notes_list.NoteListController
 import org.viktorot.notefy.note.NoteDetailsController
-import timber.log.Timber
+import org.viktorot.notefy.notes_list.NoteListController
 
 class MainActivity : AppCompatActivity(), MainActivityCallback {
 

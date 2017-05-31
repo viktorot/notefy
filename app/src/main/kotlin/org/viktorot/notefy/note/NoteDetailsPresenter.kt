@@ -13,6 +13,7 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
 
     var isNew: Boolean = true
     lateinit var note: NoteModel
+    lateinit var originalNote: NoteModel
 
     /*
         PUBLIC INTERFACE
@@ -20,9 +21,11 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
 
     fun init(note: NoteModel = NoteModel.empty) {
         this.note = note
-        this.isNew = (this.note == NoteModel.empty)
+        originalNote = note.copy()
 
-        if (!this.isNew) {
+        isNew = (note == NoteModel.empty)
+
+        if (!isNew) {
             view.setIcon(this.note.icon)
             view.setTitle(this.note.title)
             view.setContent(this.note.content)
@@ -30,7 +33,7 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
     }
 
     fun saveChanges() {
-        if (!isNoteValid()) return
+        if (!hasChanges()) return
 
         when (this.isNew) {
             true -> saveNote()
@@ -44,18 +47,19 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
     }
 
     fun onTitleUpdate(newValue: String) {
-        this.note.title = newValue
+        note.title = newValue
         updateCanSaveState()
     }
 
     fun onContentUpdate(newValue: String) {
-        this.note.content = newValue
+        note.content = newValue
         updateCanSaveState()
     }
 
     fun onIconUpdate(@DrawableRes iconResId: Int) {
-        this.note.icon = iconResId
-        view.setIcon(this.note.icon)
+        note.icon = iconResId
+        view.setIcon(note.icon)
+        updateCanSaveState()
     }
 
     fun onPinnedStateToggled() {
@@ -68,15 +72,13 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
         repo.saveNote(this.note.title, this.note.content, this.note.icon, this.note.pinned)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { id: Int ->
+                .subscribe({ id: Int ->
                             note.id = id
                             isNew = false
 
                             view.showSaveSuccess("[Note saved]")
                             updateNotification()
-                        },
-                        { error ->
+                        },{ error ->
                             Timber.e("saving => $error")
                             view.showSaveError()
                         }
@@ -87,12 +89,10 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
         repo.updateNote(this.note.id, this.note.title, this.note.content, this.note.icon, this.note.pinned)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        {
+                .subscribe({
                             view.showSaveSuccess("[Note updated]")
                             updateNotification()
-                        },
-                        { error ->
+                        },{ error ->
                             Timber.e("updating => $error")
                             view.showSaveError()
                         }
@@ -103,23 +103,21 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
         repo.setPinned(note.id, newState)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        {
+                .subscribe({
                             Timber.d("pinned state updated. new state => $note.pinned")
                             updateNotification()
-                        },
-                        { error ->
+                        },{ error ->
                             Timber.e("update pinned state => $error")
                             view.showSaveError()
                         })
     }
 
     private fun hasChanges(): Boolean {
-        return true
+        return isNoteValid() && note != originalNote
     }
 
     private fun updateCanSaveState() {
-        view.showSaveIcon(isNoteValid())
+        view.showSaveIcon(hasChanges())
     }
 
     private fun togglePinned() {
@@ -132,7 +130,7 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
     }
 
     private fun isNoteValid(): Boolean {
-        return !this.note.title.isEmpty()
+        return !note.title.isEmpty()
     }
 
     override fun cleanUp() {

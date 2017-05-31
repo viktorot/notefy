@@ -24,12 +24,10 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
     fun init() {
         notesChangedDisposable = repo.getNotesChangedObservable()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { changed ->
+                .subscribe({ changed ->
                             Timber.w("noted changed => $changed")
                             if (changed) updateNotes()
-                        },
-                        { error ->
+                        },{ error ->
                             Timber.e("notes changed => $error")
                         }
                 )
@@ -38,11 +36,11 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
     fun getNotes() {
         view.showLoadingView()
 
-        if (!notes.isEmpty()) {
-            retrieveNotes()
-        }
-        else {
-            view.showNotes(notes)
+        when(notes.isEmpty()) {
+            true -> retrieveNotes()
+            false -> {
+                view.showNotes(notes)
+            }
         }
     }
 
@@ -68,8 +66,7 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
         }
 
         pinnedUpdateDisposable = repo.setPinned(note.id, newState)
-                .subscribe(
-                        {
+                .subscribe({
                             note.pinned = newState
                             notes[index] = note
 
@@ -77,8 +74,7 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
 
                             view.updateNote(note)
                             NotificationUtils.notify(note)
-                        },
-                        { error ->
+                        },{ error ->
                             Timber.e("error updating pinned state => $error")
                         })
     }
@@ -98,8 +94,7 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
         notesDisposable = repo.getNotes()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { notes ->
+                .subscribe( { notes ->
                             this.notes = notes.toMutableList()
 
                             if (!notes.isEmpty()) {
@@ -108,8 +103,7 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
                             else {
                                 view.showEmptyView()
                             }
-                        },
-                        { error ->
+                        }, { error ->
                             Timber.w("error getting notes => $error")
                             view.showError()
                         }
