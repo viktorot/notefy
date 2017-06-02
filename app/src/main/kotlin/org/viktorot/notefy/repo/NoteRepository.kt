@@ -1,7 +1,6 @@
 package org.viktorot.notefy.repo
 
 import android.content.Context
-import android.os.SystemClock
 import android.support.annotation.DrawableRes
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
@@ -32,6 +31,9 @@ class NoteRepository(val ctx: Context) {
             }
             return _instance as NoteRepository
         }
+
+        val CHANGE_SAVE: Int = 0
+        val CHANGE_UPDATE: Int = 1
     }
 
     private val notesChangedRelay: BehaviorRelay<Boolean> = BehaviorRelay.createDefault(true)
@@ -41,8 +43,8 @@ class NoteRepository(val ctx: Context) {
         }
     }
 
-    private val changeTypeRelay: PublishRelay<String> = PublishRelay.create()
-    fun changeTypeObservable(): Observable<String> {
+    private val changeTypeRelay: PublishRelay<Int> = PublishRelay.create()
+    fun changeTypeObservable(): Observable<Int> {
         return changeTypeRelay.doOnNext { type ->
             Timber.v("change accepted => $type")
         }
@@ -73,7 +75,7 @@ class NoteRepository(val ctx: Context) {
             }
         }.map { id ->
             notesChangedRelay.accept(true)
-            changeTypeRelay.accept("save")
+            changeTypeRelay.accept(CHANGE_SAVE)
             id
         }
     }
@@ -90,7 +92,7 @@ class NoteRepository(val ctx: Context) {
             }
         }.map { success ->
             notesChangedRelay.accept(success)
-            changeTypeRelay.accept("update")
+            changeTypeRelay.accept(CHANGE_UPDATE)
             success
         }.toCompletable()
     }

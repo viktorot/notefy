@@ -17,6 +17,8 @@ import org.jetbrains.anko.onClick
 import org.viktorot.notefy.base.MainActivityCallback
 import org.viktorot.notefy.note.NoteDetailsController
 import org.viktorot.notefy.notes_list.NoteListController
+import org.viktorot.notefy.repo.NoteRepository
+import org.viktorot.notefy.utils.Constants
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), MainActivityCallback {
@@ -38,19 +40,25 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
         }
 
         changeTypeDisposable = applicationContext!!.repository.changeTypeObservable()
-                .subscribe({ type: String ->
+                .subscribe({ type: Int ->
                     when (type) {
-                        "save" -> showUpdateSnackbar("[Note saved]")
-                        "update" -> showUpdateSnackbar("[Note updated]")
+                        NoteRepository.CHANGE_SAVE -> showUpdateSnackbar("[Note saved]")
+                        NoteRepository.CHANGE_UPDATE -> showUpdateSnackbar("[Note updated]")
                         else -> Timber.w("unknown update state => $type")
                     }
                     Timber.v("change type => $type")
                 })
 
-        fab.onClick { openNote() }
+        fab.onClick { newNote() }
 
         showFab(true)
+
         initToolbar()
+
+        val data: Int = intent.getIntExtra(Constants.NOTE_ID, -1)
+        if (data > -1) {
+            // TODO: open note
+        }
     }
 
     override fun onDestroy() {
@@ -76,13 +84,17 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
         Snackbar.make(root_view, text, Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun openNote() {
+    private fun newNote() {
         val args: Bundle = Bundle()
         args.putBoolean(NoteDetailsController.IS_NEW_ARG, true)
 
         router.pushController(RouterTransaction.with(NoteDetailsController(args)))
 
         showFab(false)
+    }
+
+    private fun openNote(id: Int) {
+
     }
 
     override fun showDarkStatusBar(show: Boolean) {

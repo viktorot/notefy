@@ -35,7 +35,7 @@ class NoteDetailsPresenter(private val repo: NoteRepository, private val view: N
     fun saveChanges() {
         if (!hasChanges()) return
 
-        when (this.isNew) {
+        when (isNew) {
             true -> saveNote()
             false -> updateNote()
         }

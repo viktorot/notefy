@@ -6,6 +6,7 @@ import android.content.Intent
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v7.app.NotificationCompat
 import android.text.TextUtils
+import org.viktorot.notefy.MainActivity
 import org.viktorot.notefy.NotefyApplication
 import org.viktorot.notefy.R;
 import org.viktorot.notefy.models.NoteModel
@@ -23,8 +24,9 @@ object NotificationUtils {
     private fun displayNotification(note: NoteModel) {
         val ctx = NotefyApplication.ctx
 
-        val resultIntent = Intent(ctx, DeletePopupActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(ctx, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val intent = Intent(ctx, MainActivity::class.java)
+        intent.putExtra(Constants.NOTE_ID, note.id)
+        val pendingIntent = PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val builder = NotificationCompat.Builder(ctx)
         builder.setSmallIcon(note.icon)
@@ -33,7 +35,7 @@ object NotificationUtils {
         if (!note.content.isEmpty()) {
             builder.setContentText(note.content)
         }
-        //builder.setContentIntent(pendingIntent)
+        builder.setContentIntent(pendingIntent)
 
         NotificationManagerCompat.from(ctx)
                 .notify(note.id, builder.build())
