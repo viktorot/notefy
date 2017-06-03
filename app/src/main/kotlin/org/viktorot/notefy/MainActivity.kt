@@ -1,5 +1,6 @@
 package org.viktorot.notefy
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.DrawableRes
 import android.support.design.widget.Snackbar
@@ -64,9 +65,9 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        Timber.d("onStart")
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        Timber.d("onNewIntent")
     }
 
     override fun onDestroy() {

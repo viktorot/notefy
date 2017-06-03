@@ -23,6 +23,7 @@ object NotificationUtils {
     }
 
     private fun displayNotification(note: NoteModel) {
+        // https://developer.android.com/guide/components/activities/tasks-and-back-stack.html
         val stackBuilder = TaskStackBuilder.create(NotefyApplication.ctx)
         stackBuilder.addParentStack(MainActivity::class.java)
 
