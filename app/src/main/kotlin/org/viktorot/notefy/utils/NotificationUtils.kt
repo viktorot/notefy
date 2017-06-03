@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.NotificationManagerCompat
+import android.support.v4.app.TaskStackBuilder
 import android.support.v7.app.NotificationCompat
 import android.text.TextUtils
 import org.viktorot.notefy.MainActivity
@@ -22,13 +23,19 @@ object NotificationUtils {
     }
 
     private fun displayNotification(note: NoteModel) {
-        val ctx = NotefyApplication.ctx
+        val stackBuilder = TaskStackBuilder.create(NotefyApplication.ctx)
+        stackBuilder.addParentStack(MainActivity::class.java)
 
-        val intent = Intent(ctx, MainActivity::class.java)
+        val intent = Intent(NotefyApplication.ctx, MainActivity::class.java)
+        intent.action = System.currentTimeMillis().toString()
         intent.putExtra(Constants.NOTE_ID, note.id)
-        val pendingIntent = PendingIntent.getActivity(ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val builder = NotificationCompat.Builder(ctx)
+        stackBuilder.addNextIntent(intent)
+
+        val pendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val builder = NotificationCompat.Builder(NotefyApplication.ctx)
         builder.setSmallIcon(note.icon)
         builder.setOngoing(true)
         builder.setContentTitle(note.title)
@@ -37,14 +44,12 @@ object NotificationUtils {
         }
         builder.setContentIntent(pendingIntent)
 
-        NotificationManagerCompat.from(ctx)
+        NotificationManagerCompat.from(NotefyApplication.ctx)
                 .notify(note.id, builder.build())
     }
 
     private fun removeNotification(id: Int) {
-        val ctx = NotefyApplication.ctx
-
-        NotificationManagerCompat.from(ctx)
+        NotificationManagerCompat.from(NotefyApplication.ctx)
                 .cancel(id)
     }
 

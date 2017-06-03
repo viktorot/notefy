@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.d("onCreate")
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar)
@@ -56,12 +57,20 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
         initToolbar()
 
         val data: Int = intent.getIntExtra(Constants.NOTE_ID, -1)
+        Timber.v("--- id => $data")
         if (data > -1) {
             // TODO: open note
+            Timber.v("--- backstack size => ${router.backstackSize}")
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        Timber.d("onStart")
+    }
+
     override fun onDestroy() {
+        Timber.d("onDestroy")
         changeTypeDisposable?.dispose()
         super.onDestroy()
     }
