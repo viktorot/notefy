@@ -9,10 +9,10 @@ import com.bluelinelabs.conductor.RouterTransaction
 import org.viktorot.notefy.R
 import org.viktorot.notefy.base.BaseController
 import org.viktorot.notefy.base.MainActivityCallback
-import org.viktorot.notefy.empty
-import org.viktorot.notefy.models.NoteModel
+import org.viktorot.notefy.utils.empty
+import org.viktorot.notefy.data.NoteModel
 import org.viktorot.notefy.note.NoteDetailsController
-import org.viktorot.notefy.repository
+import org.viktorot.notefy.utils.repository
 
 class NoteListController : BaseController(), NotesListView {
 

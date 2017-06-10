@@ -4,7 +4,7 @@ import android.support.annotation.DrawableRes
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.viktorot.notefy.base.BasePresenter
-import org.viktorot.notefy.models.NoteModel
+import org.viktorot.notefy.data.NoteModel
 import org.viktorot.notefy.repo.NoteRepository
 import org.viktorot.notefy.utils.NotificationUtils
 import timber.log.Timber

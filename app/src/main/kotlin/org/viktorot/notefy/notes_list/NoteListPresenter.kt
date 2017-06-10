@@ -5,8 +5,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.viktorot.notefy.base.BasePresenter
-import org.viktorot.notefy.exceptions.NoteDeleteException
-import org.viktorot.notefy.models.NoteModel
+import org.viktorot.notefy.data.NoteModel
 import org.viktorot.notefy.repo.NoteRepository
 import org.viktorot.notefy.utils.NotificationUtils
 import timber.log.Timber
@@ -83,6 +82,7 @@ class NoteListPresenter(private val repo: NoteRepository, private val view: Note
                 .subscribeOn(Schedulers.io())
                 .map { pos: Int -> notes[pos].id }
                 .flatMap { id -> repo.deleteNote(id).toObservable() }
+                .doOnNext { id: Int -> NotificationUtils.removeNotification(id)  }
                 .doOnError { error -> Timber.e(error) }
                 .subscribe { id: Int ->
                     Timber.d("note id => %d deleted", id)

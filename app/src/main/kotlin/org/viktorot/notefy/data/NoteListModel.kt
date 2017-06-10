@@ -1,4 +1,4 @@
-package org.viktorot.notefy.models
+package org.viktorot.notefy.data
 
 import io.reactivex.Single
 import java.util.*

@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:textSize="20dp"
         android:gravity="center"
-        android:text="[Loading...]"/>
+        android:text="@string/loading_notes"/>
 
     <TextView
         android:id="@+id/empty_view"
@@ -24,7 +24,7 @@
         android:layout_height="match_parent"
         android:textSize="20dp"
         android:gravity="center"
-        android:text="[Empty view]"/>
+        android:text="@string/no_notes"/>
 
     <TextView
         android:id="@+id/error_view"
@@ -32,6 +32,6 @@
         android:layout_height="match_parent"
         android:textSize="20dp"
         android:gravity="center"
-        android:text="[Error]"/>
+        android:text="@string/loading_notes_error"/>
 
 </LinearLayout>

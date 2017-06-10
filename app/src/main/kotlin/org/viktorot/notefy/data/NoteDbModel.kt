@@ -1,6 +1,6 @@
-package org.viktorot.notefy.models
+package org.viktorot.notefy.data
 
-import org.viktorot.notefy.empty
+import org.viktorot.notefy.utils.empty
 
 class NoteDbModel(
         val id: Int,

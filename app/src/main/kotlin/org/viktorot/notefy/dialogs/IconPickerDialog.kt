@@ -24,7 +24,7 @@ class IconPickerDialog : BottomSheetDialogFragment() {
     }
 
     lateinit var adapter: IconAdapter
-    val GRID_SIZE:Int = 2
+    val GRID_SIZE: Int = 4
 
     var onIconSelected: (Int) -> Unit = { Log.wtf(TAG, "click action not set") }
 
@@ -38,7 +38,7 @@ class IconPickerDialog : BottomSheetDialogFragment() {
     }
 
     private fun initAdapter() {
-        val icons: List<Int> = NoteIcons.iconResList
+        val icons: List<Int> = NoteIcons.ICON_RES_LIST
         adapter = IconAdapter(context, icons, { resId -> onIconClick(resId) })
     }
 

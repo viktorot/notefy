@@ -28,15 +28,3 @@ class NotefyApplication: Application() {
         }
     }
 }
-
-val String.Companion.empty: String
-    get() = ""
-
-val Context.database: NoteDbHelper
-    get() = NoteDbHelper.getInstance(this)
-
-val Context.repository: NoteRepository
-    get() = NoteRepository.instance(this)
-
-val Context.timestamp: Int
-    get() = (System.currentTimeMillis() / 1000).toInt()

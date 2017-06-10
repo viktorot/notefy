@@ -13,11 +13,10 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import org.jetbrains.anko.*
-import org.jetbrains.anko.collections.asSequence
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.viktorot.notefy.R
-import org.viktorot.notefy.models.NoteModel
+import org.viktorot.notefy.data.NoteModel
 import timber.log.Timber
 
 class NoteListAdapter(

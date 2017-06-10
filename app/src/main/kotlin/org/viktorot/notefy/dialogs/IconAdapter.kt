@@ -10,7 +10,10 @@ import org.jetbrains.anko.imageResource
 import org.jetbrains.anko.onClick
 import org.viktorot.notefy.R
 
-class IconAdapter(private val ctx: Context, private val items: List<Int>, private val clickAction: (Int) -> Unit) : RecyclerView.Adapter<IconAdapter.ViewHolder>() {
+class IconAdapter(
+        private val ctx: Context,
+        private val items: List<Int>,
+        private val clickAction: (Int) -> Unit) : RecyclerView.Adapter<IconAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v: View = LayoutInflater.from(parent.context).inflate(R.layout.item_icon, parent, false)

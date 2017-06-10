@@ -7,14 +7,14 @@ import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import org.viktorot.notefy.database
+import org.viktorot.notefy.utils.database
 import org.viktorot.notefy.exceptions.NoteDeleteException
 import org.viktorot.notefy.exceptions.NoteSaveException
 import org.viktorot.notefy.exceptions.NoteUpdateException
 import org.viktorot.notefy.exceptions.PinnedStateUpdateException
-import org.viktorot.notefy.models.NoteDbModel
-import org.viktorot.notefy.models.NoteModel
-import org.viktorot.notefy.timestamp
+import org.viktorot.notefy.data.NoteDbModel
+import org.viktorot.notefy.data.NoteModel
+import org.viktorot.notefy.utils.timestamp
 import org.viktorot.notefy.utils.NoteIcons
 import timber.log.Timber
 

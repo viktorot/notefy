@@ -3,9 +3,10 @@ package org.viktorot.notefy.note
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
-import android.util.Log
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.view.*
 import android.widget.ImageButton
 import android.widget.TextView
@@ -17,12 +18,9 @@ import org.viktorot.notefy.R
 import org.viktorot.notefy.base.BaseController
 import org.viktorot.notefy.base.MainActivityCallback
 import org.viktorot.notefy.dialogs.IconPickerDialog
-import org.viktorot.notefy.models.NoteModel
-import org.viktorot.notefy.notes_list.NoteListController
-import org.viktorot.notefy.repo.NoteRepository
-import org.viktorot.notefy.repository
+import org.viktorot.notefy.data.NoteModel
 import org.viktorot.notefy.utils.TextViewTextObservable
-import timber.log.Timber
+import org.viktorot.notefy.utils.repository
 
 class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsView {
 
@@ -79,12 +77,16 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
 
         val note: NoteModel? = args.getParcelable<NoteModel?>(NOTE)
 
-        initToolbar()
-
         this.presenter = NoteDetailsPresenter(applicationContext!!.repository, this)
         when (note == null) {
-            true -> this.presenter.init()
-            false -> this.presenter.init(note as NoteModel)
+            true -> {
+                initToolbar(R.string.note_new_title)
+                this.presenter.init()
+            }
+            false -> {
+                initToolbar(R.string.note_edit_title)
+                this.presenter.init(note as NoteModel)
+            }
         }
 
         this.titleSubscription = TextViewTextObservable(view.title)
@@ -137,8 +139,8 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
         return super.onOptionsItemSelected(item)
     }
 
-    private fun initToolbar() {
-        this.actionBar?.title = applicationContext!!.getString(R.string.note_new_title)
+    private fun initToolbar(@StringRes titleResId: Int) {
+        this.actionBar?.title = applicationContext!!.getString(titleResId)
         callback.showBackArrow(true)
         callback.setBackIcon(R.drawable.ic_close_vector)
     }
@@ -163,18 +165,16 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
     override fun setPinned(pinned: Boolean) {
         if (!this.menuInflated) return
 
-        // TODO: compat drawable
-        val pinDrawable: Drawable = pinMenuItem.icon.mutate()
+        val pinDrawable: Drawable = DrawableCompat.wrap(pinMenuItem.icon)
         when (pinned) {
-            true -> pinDrawable.setTint(ContextCompat.getColor(applicationContext, R.color.colorAccent))
-            false -> pinDrawable.setTint(Color.BLACK)
+            true -> DrawableCompat.setTint(pinDrawable, ContextCompat.getColor(applicationContext, R.color.gray_900))
+            false -> DrawableCompat.setTint(pinDrawable, Color.WHITE)
         }
     }
 
     override fun showSaveIcon(show: Boolean) {
         if (!this.menuInflated) return
 
-        // TODO: compat drawable
         when (show) {
             true -> callback.setBackIcon(R.drawable.ic_check_vector_highlight)
             false -> callback.setBackIcon(R.drawable.ic_close_vector)

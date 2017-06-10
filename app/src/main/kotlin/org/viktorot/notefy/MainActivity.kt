@@ -20,6 +20,7 @@ import org.viktorot.notefy.note.NoteDetailsController
 import org.viktorot.notefy.notes_list.NoteListController
 import org.viktorot.notefy.repo.NoteRepository
 import org.viktorot.notefy.utils.Constants
+import org.viktorot.notefy.utils.repository
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), MainActivityCallback {
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar)
-        supportActionBar?.title = "[Notify]"
+        supportActionBar?.title = resources.getString(R.string.app_name)
 
         router = Conductor.attachRouter(this, controller_container, savedInstanceState)
         if (!router.hasRootController()) {
@@ -148,6 +149,6 @@ class MainActivity : AppCompatActivity(), MainActivityCallback {
     }
 
     override fun resetTitle() {
-        supportActionBar?.title = "[Notify]"
+        supportActionBar?.title = resources.getString(R.string.app_name)
     }
 }

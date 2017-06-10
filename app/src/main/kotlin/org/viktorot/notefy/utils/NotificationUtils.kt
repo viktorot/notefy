@@ -1,17 +1,13 @@
 package org.viktorot.notefy.utils
 
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.app.TaskStackBuilder
 import android.support.v7.app.NotificationCompat
-import android.text.TextUtils
 import org.viktorot.notefy.MainActivity
 import org.viktorot.notefy.NotefyApplication
-import org.viktorot.notefy.R;
-import org.viktorot.notefy.models.NoteModel
-import org.viktorot.notefy.view.DeletePopupActivity
+import org.viktorot.notefy.data.NoteModel
 
 object NotificationUtils {
 
@@ -49,7 +45,7 @@ object NotificationUtils {
                 .notify(note.id, builder.build())
     }
 
-    private fun removeNotification(id: Int) {
+    fun removeNotification(id: Int) {
         NotificationManagerCompat.from(NotefyApplication.ctx)
                 .cancel(id)
     }

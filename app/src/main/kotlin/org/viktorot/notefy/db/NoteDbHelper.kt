@@ -4,7 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import org.jetbrains.anko.db.*
-import org.viktorot.notefy.models.NoteDbModel
+import org.viktorot.notefy.data.NoteDbModel
 
 class NoteDbHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, NoteDbContract.TABLE_NAME, null, NoteDbContract.VERSION) {
 

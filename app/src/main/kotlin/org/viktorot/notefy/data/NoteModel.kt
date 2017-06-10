@@ -1,10 +1,10 @@
-package org.viktorot.notefy.models
+package org.viktorot.notefy.data
 
 import android.os.Parcel
 import android.os.Parcelable
 import android.support.annotation.DrawableRes
-import org.viktorot.notefy.empty
 import org.viktorot.notefy.utils.NoteIcons
+import org.viktorot.notefy.utils.empty
 
 class NoteModel : Parcelable {
 

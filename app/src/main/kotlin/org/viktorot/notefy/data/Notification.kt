@@ -1,4 +1,4 @@
-package org.viktorot.notefy.models
+package org.viktorot.notefy.data
 
 class Notification {
 
