@@ -167,8 +167,8 @@ class NoteDetailsController(args: Bundle) : BaseController(args), NoteDetailsVie
 
         val pinDrawable: Drawable = DrawableCompat.wrap(pinMenuItem.icon)
         when (pinned) {
-            true -> DrawableCompat.setTint(pinDrawable, ContextCompat.getColor(applicationContext, R.color.gray_900))
-            false -> DrawableCompat.setTint(pinDrawable, Color.WHITE)
+            true -> DrawableCompat.setTint(pinDrawable, ContextCompat.getColor(applicationContext, R.color.white))
+            false -> DrawableCompat.setTint(pinDrawable, ContextCompat.getColor(applicationContext, R.color.gray_900))
         }
     }
 
